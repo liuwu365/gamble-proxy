@@ -1,0 +1,83 @@
+ul.rating{
+	display: inline-block;
+	width:50%;
+	height:25px;
+	padding:0;
+	clear:both;
+
+}
+ul.rating li {
+	cursor: pointer;
+	float:left;
+	text-indent:-999em;
+	width:25px;
+	height:25px;
+	margin-left:5px ;
+}
+ul.rating li a {
+	display: block;
+	width:25px;
+	height:25px;
+	text-decoration:none;
+	z-index: 200;
+	background: url(../../../assets/images/weixin/star1.png) left bottom no-repeat;
+	background-size: cover;
+}
+ul.rating li a.curr{
+	background: url(../../../assets/images/weixin/star2.png) left bottom no-repeat;
+	background-size: cover;
+}
+
+.title{
+	border-bottom: 1px solid #DADADA;
+	font-size: 20px;
+	text-align: center;
+}
+.score{
+	vertical-align: top;
+	padding-bottom: 20px;
+	display: inline-block;
+	padding-left: 20px;
+	
+}
+.evaluate p{
+	padding:10px;
+	padding-left:20px;
+}
+.advice{
+	width:90%;
+	height:15%;
+	margin:auto;
+	border: hidden;
+	border-radius: 5px;;
+}
+textarea{
+	width:100%;
+	height:100%;
+	border-radius: 5px;;
+	border: hidden;
+	vertical-align: top;
+	white-space:pre-wrap; /* css3.0 */ 
+white-space:-moz-pre-wrap; /* Firefox */ 
+white-space:-pre-wrap; /* Opera 4-6 */ 
+white-space:-o-pre-wrap; /* Opera 7 */ 
+word-wrap:break-word; /* Internet Explorer 5.5+ */ 
+}
+.evaluate{
+	font-size: 12px;
+	font-weight: bold;
+}
+.customerList{
+	font-size: 15px;
+	font-weight: bold;
+	border-bottom: 1px solid #DADADA;
+	padding: 10px;
+	padding-left: 20px;
+}
+.btn{
+	margin-top: 10px;;
+	border: 0px;
+}
+#advice{
+	height: 30%;
+}

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide(2);
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        dataType:'json',
+                        data:$(form).serialize(),
+                        error:function (data) {
+                            layer.msg(JSON.parse(data.responseText).msg);
+                        },
+                        success:function (data) {
+                            console.log("success:"+data);
+                        }
+
+                    });
+                },
+                error:function (e) {
+                    console.log("error");
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                },
+                rules: {
+                    accountName: {
+                        required: false
+                    }
+                },
+                messages: {
+                    accountName: {
+                        required: "请输入账号",
+                        remote: "该账号不存在"
+                    }
+                }
+
+            });
+        });
+        console.log($("#form").serialize());
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">会员管理</a><span>></span>
+        <a href="#">用户中心</a><span>></span>
+        <em>新建用户账号</em>
+    </div>
+    <div class="main">
+        <form action="/work/order/add.json" method="post" class="form-horizontal" id="form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">账号：</label>
+                    <input type="hidden" name="createUser" th:value="${createUser.id}" />
+                    <input class="col-md-6" name="createUserName"  th:value="${createUser.userName}" readonly="readonly"/>
+                </div>
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">密码：</label>
+                    <input class="col-md-6" name="createTime"  th:value="${#dates.format(createTime,'yyyy-MM-dd HH:mm:ss')}" readonly="readonly"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">密保问题：</label>
+                    <input class="col-md-6" name="userName"   title="用户账户" value="Jerry"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">邀请码</label>
+                    <select class="col-md-6" name="orderType">
+                        <option  th:each="ot:${orderType}" th:value="${ot.code}" th:text="${ot.desc}"></option>
+                    </select>
+                </div>
+            </div>
+            <p>绑定银行卡</p>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">姓名：</label>
+                    <input class="col-md-6" name="eventId" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">银行：</label>
+                    <input class="col-md-6" name="roleId" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">卡号：</label>
+                    <div class="col-sm-3">
+                        <textarea name="problemDescription" class=" col-md-6 form-control" rows="3"></textarea>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="save btn btn-danger" name="save">保存</button>
+                <input type="button" class="btn btn-warning" name="cancel" value="取消" onclick="cancleGoBack();"/>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

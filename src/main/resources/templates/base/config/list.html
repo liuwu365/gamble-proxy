@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        $(function () {
+            showSide("基础配置");
+            $(".newadd").click(function () {
+                window.location = '/configManage/enumData/add.json';
+            });
+        });
+
+
+
+        function deleteSys(doc){
+            layer.confirm('您确定删除吗？', {
+                btn: ['是','否'] //按钮
+            }, function(){
+                $.get("/configManage/enumData/deleteSysEnumData?id=" + doc.id,function(data){
+                    if(data){
+                        layer.msg("删除成功了！");
+                        window.location.reload();
+                    }else{
+                        layer.msg("删除失败！");
+                    }
+                });
+            });
+        }
+
+        function HTMLEnCode(str){
+            return str.toString().replace(/\"/g, '&quot;');
+        }
+
+        function updateJB(doc){
+            var obj = $(doc);
+            var enumValue = obj.attr("enumValue");
+            if(typeof(enumValue) == "undefined"){
+                enumValue = 0;
+            }
+            layer.open({
+                title: '修改配置值',
+                type: 1,
+                skin: 'layui-layer-demo', //样式类名
+                //closeBtn: 0, //不显示关闭按钮
+                shift: 2,
+                shadeClose: false, //是否开启遮罩关闭
+                area: ['620px', ''], //宽高
+                content: '<div class="alertDiv">值:<textarea id="enumValue" name="enumValue" style="width: 450px;height: 200px;">'+HTMLEnCode(enumValue)+'</textarea></div>',
+                btn:['保存','取消'],
+                yes:function(){
+                    $.ajax({
+                        url: '/configManage/enumData/updateJudge.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {id: doc.id, enumValue: $("#enumValue").val()},
+                        success: function(data){
+                            if(data.code==200){
+                                layer.msg(data.msg, {time: 1000,end:function(){
+                                    window.location.reload();
+                                }});
+                            }else{
+                                layer.msg(data.msg, {time: 6000});
+                            }
+                        },
+                        error: function(e){
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel:function(){}
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">配置管理</a><span>></span>
+        <a href="/configManage/enumData/sysEnumDataList.json">基础配置管理</a><span>></span>
+        <em>配置列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <div class="wrap">
+                <form action="/configManage/enumData/sysEnumDataList.json" method="POST" class="form-inline" id="searchForm">
+                    <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                    <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                    <div class="form-group">
+                        <input  class="form-control" type="text" name="filter['dataType']"  th:value="${page.filter['dataType']}"  placeholder="枚举类型搜索 " />
+                        <input  class="form-control" type="text" name="filter['enumKey']" th:value="${page.filter['enumKey']}" placeholder="键搜索"/>
+                        <input  class="form-control" type="text" name="filter['description']" th:value="${page.filter['description']}" placeholder="描述搜索"/>
+                        <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                    </div>
+                    <div class="pull-right">
+                        <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                        <a href="#" class="newadd btn btn-success">新增</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                    <td class="id">ID</td>
+                    <td class="dataType">枚举类型</td>
+                    <td class="enumKey">键</td>
+                    <td class="enumValue" style="max-width: 50px;
+                    word-break: break-all;">值</td>
+                    <td class="description"> 描述</td>
+                    <td class="set">设置</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="h:${page.result}">
+                        <td class="id" th:text="${h.id}"></td>
+                        <td class="dataType" th:text="${h.dataType}"></td>
+                        <td class="enumKey" th:text="${h.enumKey}"></td>
+                        <td class="enumValue" >
+                            <div>
+                            <span th:text="${h.enumValue}" style="display:inline-block;width: 300px;overflow:hidden;text-overflow:ellipsis;
+                    white-space:nowrap;" th:title="${h.enumValue}"></span>
+                                <a class="xg" href="javascript:;" th:id="${h.id}" th:attr="enumValue=${h.enumValue}" onclick="updateJB(this);" title="修改"></a>
+                            </div>
+                        </td>
+
+                        <td class="description" th:text="${h.description}"></td>
+                        <td class="set">
+                            <a class="del" th:id="${h.id}" onclick="deleteSys(this);">删除</a>
+                            <span>|</span>
+                            <a th:href="@{/configManage/enumData/editView.html(id=${h.id})}" class="reset">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

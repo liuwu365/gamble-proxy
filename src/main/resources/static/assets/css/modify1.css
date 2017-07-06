@@ -1,0 +1,15 @@
+/*makeAppointment.html*/
+.content{
+    vertical-align: middle;
+}
+.content p{
+    width: 100%; float: left; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;vertical-align: middle;
+}
+.select_title{
+    font-size: 14px;
+}
+.spe-title{
+    color: #555555!important;
+    font-size: 15px!important;
+    font-weight: 700!important;
+}

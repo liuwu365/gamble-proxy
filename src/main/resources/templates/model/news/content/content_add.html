@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click();
+            showSide("文章列表");
+            //文件上传
+            $(document).on('change', "input[type='file']", function () {
+                _CommonJS.upload(this.id, '/uploads');
+            });
+            //实例化编辑器
+            var ue = UE.getEditor('editor', {
+                toolbars: [[
+                    'fullscreen', 'source', '|', 'undo', 'redo', '|',
+                    'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+                    'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+                    'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+                    'directionalityltr', 'directionalityrtl', 'indent', '|',
+                    'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'touppercase', 'tolowercase', '|',
+                    'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+                    'simpleupload', 'insertimage', 'insertvideo', 'pagebreak', 'music', 'emotion', 'scrawl', '|',
+                    'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+                    'drafts', 'help'
+                ]]
+            });
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: '_error',
+                focusInvalid: false,
+                ignore: "",
+                rules: {
+                    title: {required: true},
+                    folderid: {required: true},
+                    status: {required: true}
+
+                },
+                messages: {
+                    title: {required: "必填"},
+                    folderid: {required: "必填"},
+                    status: {required: "必填"}
+                },
+                submitHandler: function (form) {
+                    $("input[name='content']").val(UE.getEditor('editor').getContent()); //拼接一个div服务内容分页
+                    $(form).ajaxSubmit(function (res) {
+                        console.log(res);
+                        if (res.code == 200) {
+                            layer.msg(res.msg, {time: 1000},function(){
+                                window.location.href = "/news/content/content_list.html";
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 6000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+            _LoadSelectBox.getFolder(); //加载文章类型下拉框(栏目列表)
+            //色盘设置
+            $("#color").change(function () {
+                $(".shortTitle").css({color: this.value});
+            });
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/content/content_list.html">文章管理</a><span>></span>
+        <em>新增文章</em>
+    </div>
+    <div class="main">
+        <form action="/news/content/content_add" method="post" class="layui-form form-horizontal" id="form">
+            <input type="hidden" id="news_prefix" name="news_prefix" th:value="${news_prefix}" />
+            <div class="row">
+                <label class="col-xs-1 control-label">文章类型：</label><!--所属栏目-->
+                <div class="col-xs-2">
+                    <select class="folderidBox form-control" name="folderid">
+                        <option value="">请选择</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">完整标题：</label>
+                <div class="col-xs-8">
+                    <input type="text" id="content_title" class="content_title form-control" name="title" placeholder="请输入标题" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="short_title col-xs-1 control-label">简短标题：</label>
+                <div class="col-xs-2">
+                    <input name="shortTitle" class="shortTitle form-control" placeholder="请输入简短标题" value="" />
+                    <input type="color" id="color" name="shortTitleStyle" list="colors" style="width:80px;margin-top:8px;" />
+                </div>
+                <label class="short_title col-xs-1 control-label">副标题：</label>
+                <div class="col-xs-2">
+                    <input class="form-control" name="secondTitle" placeholder="请输入副标题" value="" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">关键词：</label>
+                <div class="col-xs-2">
+                    <input type="text" name="keyworld" class="form-control" placeholder="请输入关键词" />
+                </div>
+                <label class="col-xs-1 control-label">文章作者：</label>
+                <div class="col-xs-2">
+                    <input type="text" name="author" class="form-control" placeholder="请输入文章作者" />
+                </div>
+                <label class="col-xs-1 control-label">文章来源：</label>
+                <div class="col-xs-2">
+                    <input type="text" name="source" class="form-control" placeholder="请输入文章来源" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">转向链接：</label>
+                <div class="col-xs-8">
+                    <input class="linkerUrl form-control" placeholder="请填写转向链接" name="linkerurl" onblur="_CommonJS.checkUrl(this.value);" value="" />
+                </div>
+            </div>
+            <div class="row" style="min-height:350px">
+                <label class="col-xs-1 control-label">文章内容：</label>
+                <div class="col-xs-2">
+                    <input type="hidden" name="content" value="" />
+                    <!--<script id="editor" type="text/plain" style="margin-top:10px; width:1000px; height:250px;"></script>-->
+                    <script type="text/plain" id="editor" style="margin-top:10px; width:1000px; height:250px;"></script>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">首图：</label>
+                <div class="gamelog col-xs-2">
+                    <i><img id="index_pic" src="" /></i>
+                    <input type="file" name="upload_org_code" id="upload_org_code" value="" />
+                    <input type="hidden" id="index_image" class="form-control" name="indexImage" value="" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="leave col-xs-1 control-label">推荐级：</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control" placeholder="请输入推荐级(0~99)" name="level"
+                           onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                </div>
+                <label class="createTime col-xs-1 control-label">发布时间：</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control" name="createtime" id="createtime" placeholder="YYYY-MM-DD hh:mm:ss"
+                           onclick="laydate({elem:(this), format: 'YYYY-MM-DD hh:mm:ss'})" />
+                </div>
+                <label class="col-xs-1 control-label">点击量：</label>
+                <div class="col-xs-2">
+                    <input class="form-control" name="clickcount"
+                           onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                </div>
+            </div>
+            <div class="row layui-form-item">
+                <label class="col-xs-1 control-label ">发布状态：</label>
+                <div class="col-xs-5">
+                    <input type="radio" name="status" checked="checked" value="0" title="保存为草稿" />
+                    <input type="radio" name="status" value="1" title="保存为已审核" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">是否同步到App：</label>
+                <div class="col-xs-2">
+                    <input type="checkbox" name="app" value="1" title="是" />
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

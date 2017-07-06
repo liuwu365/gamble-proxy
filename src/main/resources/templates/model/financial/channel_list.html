@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head lang="en">
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>lottery</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <style type="text/css">
+        .stripe .xg{margin-left: 5px;padding: 0 12px;background: url(/img/bj.png) no-repeat center;}
+        .stripe .updatEexperienceDiv{z-index: 99;border: 1px solid #0044cc;}
+        .layui-layer-demo .layui-layer-title{border:none; background-color:#333; color:#fff;}
+        .alertDiv{ height:100%;display: block;font-size:14px;margin: 2% 14%;}
+        .alertDiv input{height:36px;margin-bottom: 0px;}
+        .operation label{display: inline;margin-left: 20px;}
+    </style>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#finance").click();
+        });
+        //]]>
+
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">财务管理</a><span>></span>
+        <a href="#">支付渠道管理</a><span>></span>
+    </div>
+    <div class="container-list">
+        <div class="stripe">
+            <table class="table table-bordered">
+                <thead>
+                <tr class="backtrhd">
+                    <td width="50px;" >渠道ID</td>
+                    <td width="100px;" >渠道名称</td>
+                    <td width="100px;" >渠道限制</td>
+                    <td width="100px;" >渠道类型</td>
+                    <td width="100px;" >转账账户</td>
+                    <td width="150px;" >二维码</td>
+                    <td width="50px;" >提醒</td>
+                    <td width="100px;" >应用位置</td>
+                    <td width="100px;" >设置</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="c:${payChannelsList}">
+                    <td class="id" th:text="${c.id}"></td>
+                    <td class="payChannelsName" th:text="${c.payChannelsName}" th:title="${c.payChannelsName}"></td>
+                    <td class="limit" th:text="${c.limit}" th:title="${c.limit}"></td>
+                    <td class="payChannel" th:text="${c.payChannel}" th:title="${c.payChannel}"></td>
+                    <td class="transferAccount" th:text="${c.transferAccount}" th:title="${c.transferAccount}"></td>
+                    <td class="qrCode">
+                        <a href="#"><img class="prompt"
+                                         th:if="${img_url_prefix+c.qrCode!=null and img_url_prefix+c.qrCode!=''}"
+                                         th:title="${img_url_prefix+c.qrCode}" th:src="${img_url_prefix+c.qrCode}" alt="" /></a>
+                    </td>
+                    <td class="payRemind" th:text="${c.payRemind}" th:title="${c.payRemind}"></td>
+                    <td class="applyPlace">
+                        <span th:if="${c.appLocation==1 or c.appLocation==2 or c.appLocation == 3}" th:text="${c.appLocation==1?'app充值渠道1':c.appLocation==2?'app充值渠道2':c.appLocation==3?'app充值渠道3':'app暂无入口'}"></span>
+                        <br/>
+                        <span th:if="${c.webLocation==1 or c.webLocation==2 or c.webLocation == 3 or c.webLocation == 4}" th:text="${c.webLocation==1?'网页充值渠道1':c.webLocation==2?'网页充值渠道2':c.webLocation==3?'网页充值渠道3':c.webLocation==4?'网页充值渠道4':'网页暂无入口'}"></span>
+                    </td>
+                    <td class="set">
+                        <a th:href="@{/financial/pay/channel/editView.html(id=${c.id})}" class="btn btn-xs btn-info">修改渠道</a>
+                        <br/>
+                        <a th:href="@{/financial/pay/channelApply.html(id=${c.id})}" class="btn btn-xs btn-danger">应用渠道</a>
+                        <br/>
+                        <a th:id="${c.id}" onclick="deleteCarousel(this);" class="btn btn-xs btn-info" >删除渠道</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="example"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

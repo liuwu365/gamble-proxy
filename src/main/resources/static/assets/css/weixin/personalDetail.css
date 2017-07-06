@@ -1,0 +1,12 @@
+.selectBox .select_title {
+	margin-left: 10px;
+	
+}
+.result{
+	text-align: left;
+	width: 50%;
+}
+.selectBox input{
+	width: 100%;
+	height: 100%;
+}

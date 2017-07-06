@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="model/head">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>博彩管理后台</title>
+    <meta name="keywords" content="博彩" />
+    <meta name="description" content="博彩管理后台" />
+    <style type="text/css">
+        .wrap{ margin-left:220px }
+        .text-primary{ margin:100px; font-size:20px; list-style:none; }
+    </style>
+</head>
+<body class="back">
+<div class="wrap" layout:fragment="content">
+    <div class="widget-body">
+        <div class="widget-main">
+            <div>
+                <div class="col-sm-10">
+                    <ol>
+                        <li class="text-primary">你没权限操作此功能，请联系管理员！！</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

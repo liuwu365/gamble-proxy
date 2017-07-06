@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="renderer" content="webkit"/>
+    <title>博彩管理后台</title>
+    <link rel="stylesheet" href="/css/dropdown.css"/>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#work").click();
+            showSide(2);
+
+            $("#handler").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        error: function (data) {
+                            layer.msg(JSON.parse(data.responseText).msg);
+                        },
+                        success: function (data) {
+                            console.log("success:" + data);
+                        }
+                    });
+                }
+            });
+
+            $("#processResultCode").on('change', function (e) {
+                var value = $(this).val();
+                var text = $(this).find("option:selected").text();
+                var val = $(this).find("option:selected").val();
+                console.log(val + " " + text);
+                var result = $("#processResult");
+                if (val == 2) {
+                    result.removeClass("hide");
+                } else {
+                    result.addClass("hide");
+                }
+            })
+
+            $("#confirmOrder").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        error: function (data) {
+                            layer.msg(JSON.parse(data.responseText).msg);
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            layer.msg(data.msg);
+                        }
+                    });
+                }
+            })
+
+            $("#rejectHandler").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit({
+                        error: function (data) {
+                            layer.msg(JSON.parse(data.responseText).msg);
+                        },
+                        success: function (data) {
+                            console.log(data);
+                            layer.msg(data.msg);
+                        }
+                    });
+                }
+            })
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">客服管理</a><span>></span>
+        <em>创建工单</em>
+    </div>
+    <div class="main">
+        <div class="panel panel-default" th:each="order:${orders}">
+            <div class="panel-body" th:if="${order.rejectUpdate==true}">
+                <form class="form-horizontal">
+
+                    <fieldset disabled="disabled">
+                        <div class="form-group">
+                            <label for="createUserName" class="col-sm-1 control-label">创建人：</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="createUserName"
+                                       th:value="${order.createUserName}"
+                                       class="form-control" id="createUserName"/>
+                            </div>
+                            <label for="createTime" class="col-sm-1 control-label">创建时间：</label>
+                            <div class="col-sm-2">
+
+                                <input name="createTime" id="createTime"
+                                       th:value="${#dates.format(order.createTime,'yyyy-MM-dd HH:mm:ss')}"
+                                       class="form-control"/>
+                            </div>
+                            <label for="userName" class="col-sm-1 control-label">用户账户：</label>
+                            <div class="col-sm-2">
+
+                                <input name="userName" id="userName"
+                                       th:value="${order.userName}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="orderType" class="col-sm-1 control-label">工单类型</label>
+                            <div class="col-sm-2">
+                                <input id="orderType" name="orderType" class="form-control"
+                                       th:value="${order.orderType.desc}"/>
+                            </div>
+                            <label for="eventId" class="col-sm-1 control-label">事件ID：</label>
+                            <div class="col-sm-2">
+
+                                <input id="eventId" name="eventId" class="form-control" th:value="${order.eventId}"/>
+                            </div>
+                            <label for="sendUserGroup" class="col-sm-1 control-label">发送给谁：</label>
+                            <div class="col-sm-2">
+
+                                <input id="sendUserGroup" class="form-control" name="sendUserGroup"
+                                       th:value="${order.deptName+'-'+order.groupName}"/>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="problemDescription" class="col-sm-1 control-label">问题描述：</label>
+                            <div class="col-sm-2">
+                                    <textarea id="problemDescription" name="problemDescription" class="form-control"
+                                              rows="1"
+                                              th:text="${order.problemDescription}"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="col-md-4 text-right">上传图片</label>
+                                <img width="20px"
+                                     th:src="${'http://192.168.1.12:8090/group1/M00/00/32/wKgBDle9asGAQsF0AADIT8JgwSE010.png'}"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <label class="col-md-4 text-right">聊天ID：</label>
+                                <input class="col-md-6" name="chatId" th:value="${order.chatRecordId}"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+
+            <div class="panel-body" th:if="${order.rejectUpdate==false}">
+
+                <form class="form-horizontal"
+                      method="post">
+                    <input type="hidden" th:value="${order.id}" name="id"/>
+                    <input type="hidden" th:value="${order.orderNo}" name="orderNo"/>
+                    <fieldset disabled="disabled">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-1 control-label">处理人：</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="createUserName1"
+                                       th:value="${currentUser.accountName+' ' +currentUser.userName}"
+                                       class="form-control" id="inputEmail3"/>
+                            </div>
+                            <label for="inputBeginProcessingTime" class="col-sm-1 control-label">开始处理时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="inputBeginProcessingTime" id="inputBeginProcessingTime"
+                                       th:value="${#dates.format(order.beginProcessingTime,'yyyy-MM-dd HH:mm:ss')}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="processResultCode1" class="col-sm-1 control-label">处理情况：</label>
+                            <div class="col-sm-2">
+
+                                <input type="text" name="processResult"
+                                       class="form-control" th:value="${order.processResult}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="opRecord" class="col-sm-1 control-label">操作记录：</label>
+                            <div class="col-sm-10 pull-right" th:if="${order.operationLog!=null}">
+                                <table class="table" id="opRecord">
+                                    <thead>
+                                    <tr>时间</tr>
+                                    <tr>用户ID</tr>
+                                    <tr>员工账号</tr>
+                                    <tr>员工名</tr>
+                                    <tr>操作行为</tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:text="${#dates.format(order.operationLog.createTime,'yyyy-MM-dd HH:mm')}">
+                                        时间
+                                    </tr>
+                                    <tr th:text="${order.operationLog.operUserId}">用户ID</tr>
+                                    <tr th:text="${currentUser.accountName}">员工账号</tr>
+                                    <tr th:text="${currentUser.userName}">员工名</tr>
+                                    <tr th:text="${order.operationLog.content}">操作行为</tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="remarks" class="col-sm-1 control-label">备注：</label>
+                            <div class="col-sm-2">
+                                <textarea type="text" class="form-control" name="remarks" id="remarks"
+                                          th:text="${order.remarks}"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="imgUrl" class="col-sm-1 control-label">上传图片：</label>
+                            <div class="col-sm-2">
+                                <input type="file" class="form-control" name="imgUrl" id="imgUrl"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+
+        <div class="panel panel-default">
+
+
+            <!--完成处理-->
+            <div class="panel-body" th:if="${op=='0'|| op =='2'}">
+
+                <form class="form-horizontal" role="form" action="/work/process/process.json" id="handler"
+                      method="post">
+                    <input type="hidden" th:value="${process.id}" name="id"/>
+                    <input type="hidden" th:value="${process.orderNo}" name="orderNo"/>
+                    <fieldset disabled="disabled">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-1 control-label">处理人：</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="createUserName1"
+                                       th:value="${currentUser.accountName+' ' +currentUser.userName}"
+                                       class="form-control" id="inputEmail3"/>
+                            </div>
+                            <label for="inputBeginProcessingTime" class="col-sm-1 control-label">开始处理时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="inputBeginProcessingTime" id="inputBeginProcessingTime"
+                                       th:value="${#dates.format(process.beginProcessingTime,'yyyy-MM-dd HH:mm:ss')}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label for="processResultCode1" class="col-sm-1 control-label">处理情况：</label>
+                        <div class="col-sm-2">
+                            <select id="processResultCode1" name="processResultCode">
+                                <option th:each="r:${wpResult}" th:value="${r.code}" th:text="${r.desc}"></option>
+                            </select>
+                            <input type="text" name="processResult"
+                                   class="form-control hide" id="processResult"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="opRecord" class="col-sm-1 control-label">操作记录：</label>
+                        <div class="col-sm-10 pull-right" th:if="${process.operationLog!=null}">
+                            <table class="table" id="opRecord">
+                                <thead>
+                                <tr>时间</tr>
+                                <tr>用户ID</tr>
+                                <tr>员工账号</tr>
+                                <tr>员工名</tr>
+                                <tr>操作行为</tr>
+                                </thead>
+                                <tbody>
+                                <tr th:text="${#dates.format(process.operationLog.createTime,'yyyy-MM-dd HH:mm')}">时间
+                                </tr>
+                                <tr th:text="${process.operationLog.operUserId}">用户ID</tr>
+                                <tr th:text="${currentUser.accountName}">员工账号</tr>
+                                <tr th:text="${currentUser.userName}">员工名</tr>
+                                <tr th:text="${process.operationLog.content}">操作行为</tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks" class="col-sm-1 control-label">备注：</label>
+                        <div class="col-sm-2">
+                            <textarea type="text" class="form-control" name="remarks" id="remarks">我处理完了</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="imgUrl" class="col-sm-1 control-label">上传图片：</label>
+                        <div class="col-sm-2">
+                            <input type="file" class="form-control" name="imgUrl" id="imgUrl"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-1 col-sm-2">
+                            <button type="submit" class="btn btn-default">提交</button>
+                            <button type="reset" class="btn btn-default">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!--确认工单面板-->
+            <div class="panel-body" th:if="${op=='1'}">
+                <form class="form-horizontal" role="form" action="/work/process/process.json"
+                      method="post" id="confirmOrder">
+                    <input type="hidden" name="orderNo" th:value="${orderNo}"/>
+                    <fieldset disabled="disabled">
+                        <div class="form-group">
+                            <label for="handlerName" class="col-sm-1 control-label">处理人：</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="createUserName"
+                                       th:value="${currentUser.accountName+' ' +currentUser.userName}"
+                                       class="form-control" id="handlerName"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label for="processResultCode" class="col-sm-1 control-label">确认情况：</label>
+                        <div class="col-sm-2">
+                            <select id="processResultCode" name="processResultCode">
+                                <option class="from-control" th:each="r:${wpResult}" th:value="${r.code}"
+                                        th:text="${r.desc}"></option>
+                                <!--<option value="3">已解决</option>-->
+                                <!--<option value="5">联系不上客户</option>-->
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks1" class="col-sm-1 control-label">备注：</label>
+                        <div class="col-sm-2">
+                            <textarea id="remarks1" name="remarks" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="chatId" class="col-sm-1 control-label">聊天ID：</label>
+                        <div class="col-sm-2">
+                            <input type="text" id="chatId" name="chatId" class="form-control"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-1 col-sm-2">
+                            <button type="submit" class="btn btn-default save btn-danger">提交</button>
+                            <button class="btn btn-warning" onclick="cancleGoBack();">取消</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!--驳回工单-->
+            <div class="panel-body" th:if="${op=='3'}">
+
+                <form class="form-horizontal" role="form" action="/work/process/process.json" id="rejectHandler"
+                      method="post">
+                    <input type="hidden" th:value="${od.orderNo}" name="orderNo"/>
+                    <input type="hidden" th:value="${od1.sequence}" name="sequence"/>
+                    <input type="hidden" value="4" name="processResultCode"/>
+
+                    <fieldset disabled="disabled">
+                        <div class="form-group">
+                            <label for="inputEmail3" class="col-sm-1 control-label">创建人：</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="createUserName1"
+                                       th:value="${currentUser.accountName+' ' +currentUser.userName}"
+                                       class="form-control" id="inputEmail3"/>
+                            </div>
+                            <label for="inputBeginProcessingTime" class="col-sm-1 control-label">开始处理时间</label>
+                            <div class="col-sm-2">
+                                <input type="text" name="inputBeginProcessingTime" id="inputBeginProcessingTime"
+                                       th:value="${#dates.format(createTime,'yyyy-MM-dd HH:mm:ss')}"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">工单类型</label>
+                        <div class="col-sm-2">
+                            <select name="orderType"  class="form-control">
+                                <option th:each="ot:${orderType}" th:value="${ot.code}" th:text="${ot.desc}"
+                                        th:selected="${ot.code==od.orderType.code}"></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="element_id">
+                        <label class="col-sm-1 control-label">发送给谁：</label>
+                        <div class="col-sm-6">
+                        <select class="dept" name="deptId" data-url="/base/dept/findDept.json" data-first-title="请选择部门">
+                        </select>
+                        <select class="group" name="groupId" data-url="/base/dept/findGroupByDeptId.json"
+                                data-first-title="请选择分组"
+                                data-json-space="t" data-json-name="groupName" data-json-value="id"></select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks" class="col-sm-1 control-label">问题描述：</label>
+                        <div class="col-sm-2">
+                            <textarea type="text" class="form-control" name="problemDescription" th:value="${od.problemDescription}"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="imgUrl" class="col-sm-1 control-label">上传图片：</label>
+                        <div class="col-sm-2">
+                            <input type="file" class="form-control" name="imgUrl" id="imgUrl"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-1 col-sm-2">
+                            <button type="submit" class="btn btn-default">提交</button>
+                            <button type="reset" class="btn btn-default">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

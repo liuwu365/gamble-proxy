@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("后台用户管理");
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit(function (res) {
+                        if (res.code == 200) {
+                            layer.confirm("添加成功，是否继续新增？", {
+                                btn: ['确定', '取消']
+                            }, function () {
+                                window.location.href = "/base/user/add.html";
+                            }, function () {
+                                window.location.href = "/base/user/list.html";
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 3000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                },
+                rules: {
+                    userName: {
+                        required: true
+                    }, password: {
+                        required: true
+                    }, accountName: {
+                        required: true,
+                        remote: { // 异步验证是否存在
+                            type: "POST",
+                            url: '/base/user/isExist.json',
+                            data: {
+                                name: function () {
+                                    return $("[name='accountName']").val();
+                                }
+                            }
+                        }
+                    }
+                },
+                messages: {
+                    userName: {
+                        required: "必填"
+                    }, password: {
+                        required: "必填"
+                    }, accountName: {required: "请输入账号", remote: "该账号已经存在"}
+                }
+            });
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">后台用户管理</a><span>></span>
+        <em>新增后台用户</em>
+    </div>
+    <div class="main">
+        <form action="/base/user/save.json" method="post" class="form-horizontal" id="form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">用户名：</label>
+                    <input class="col-md-6" name="userName"/>
+                </div>
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">账号：</label>
+                    <input class="col-md-6" name="accountName"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">是否锁定：</label>
+                    <select class="col-md-6" name="locked">
+                        <option value="0">否</option>
+                        <option value="1">是</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="col-md-2 control-label">密码：</label>
+                    <input class="col-md-3" value="123456" name="password" />
+                </div>
+            </div>
+            <div class="row">
+                <div id="element_id" class="col-md-3">
+                    <label class="col-md-4 control-label">部门和组：</label>
+                    <select class="dept" name="deptId" data-url="/base/dept/findDept.json" data-first-title="请选择部门">
+                    </select>
+                    <select class="group" name="groupId" data-url="/base/dept/findGroupByDeptId.json" data-first-title="请选择分组"
+                            data-json-space="t" data-json-name="groupName" data-json-value="id"></select>
+                </div>
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">描述：</label>
+                    <input class="col-md-6" name="description" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">角色：</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <div class="col-md-12" th:each="g:${list}">
+                        <input style="width:25px" type="radio" name="roles" th:value="${g.id}" th:text="${g.name}" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="save btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" value="取消" onclick="cancleGoBack();" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

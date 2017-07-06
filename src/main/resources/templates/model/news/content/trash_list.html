@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click(); //选中咨询管理,使左侧菜单保留住
+            showSide("回收站");
+            _LoadSelectBox.getFolder(); //加载文章类型下拉框(栏目列表)
+            _CommonJS.showLargeImg(); //鼠标悬浮显示大图
+
+            //批量删除
+            $("#trashContentDeleteBath").click(function () {
+                layer.confirm("确定要执行批量删除操作吗？", {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var ids = _CommonJS.getChks('selectContentId');
+                    $.get("/news/content/deleteContentBath/" + ids, function (data) {
+                        if (data) {
+                            layer.msg("操作成功了！", {time: 1000}, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg("操作失败了！", {time: 3000});
+                        }
+                    });
+                }, function () {
+                    layer.close();
+                });
+            });
+
+            //批量恢复-->恢复到草稿状态
+            $("#trashContentRecoverBath").click(function () {
+                layer.confirm("确定要恢复这些文章吗？", {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var ids = _CommonJS.getChks('selectContentId');
+                    var status = 0; //0.草稿 1.已审核 3.已删除(回收站)
+                    $.get("/news/content/updateStatus/" + status + "/" + ids, function (data) {
+                        if (data) {
+                            layer.msg("操作成功了！", {time: 1000}, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg("操作失败了！", {time: 3000});
+                        }
+                    });
+                }, function () {
+                    layer.close();
+                });
+            });
+        });
+        //彻底删除回收站文章
+        function deleteContent(doc) {
+            layer.confirm("确定删除吗,回收站中的内容删除后不可恢复？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/content/deleteContent/" + doc.id, function (data) {
+                    if (data) {
+                        layer.msg("操作成功了！", {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg("操作失败了！", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //设置状态:将回收站中的文章恢复  0.草稿 1.已审核 3.已删除(回收站)
+        function setStatus(status, doc) {
+            layer.confirm("确定恢复此文章设为已审核并发布吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/content/updateStatus/" + status + "/" + doc.id, function (data) {
+                    if (data) {
+                        layer.msg("操作成功了！", {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg("操作失败了！", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/content/trash_list.html">回收站</a><span>></span>
+        <em>回收站</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/news/content/trash_list.html" method="post" class="form-inline" id="searchForm">
+                <div class="form-group">
+                    标题： <input type="text" name="filter['shortTitle']" class="form-control" placeholder="标题搜索" th:value="${page.filter['shortTitle']}" />
+                    <span>所属栏目：</span>
+                    <select class="folderidBox form-control" name="filter['folderid']">
+                        <option value="">请选择</option>
+                    </select>
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <input type="hidden" name="folderid" th:value="${page.filter['folderid']}" />
+                <div class="pull-right">
+                    <a href="#" id="trashContentRecoverBath" class="btn btn-success">批量恢复</a>
+                    <a href="#" id="trashContentDeleteBath" class="btn btn-success">批量删除</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td width="50px;"><input type="checkbox" name="checkboxes[]" id="select_all" /></td>
+                        <td>文章ID</td>
+                        <td>文章名称</td>
+                        <td>简短标题</td>
+                        <td>所属栏目</td>
+                        <td>推荐级别</td>
+                        <td>文章来源</td>
+                        <td>首图</td>
+                        <td>转向链接</td>
+                        <td>发布者</td>
+                        <td>创建时间</td>
+                        <td>更新时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c:${content.result}">
+                        <td><input type="checkbox" name="selectContentId" id="checkbox2" th:value="${c.id}" /></td>
+                        <td th:text="${c.id}"></td>
+                        <td class="help" th:text="${c.title}" th:title="${c.title}"></td>
+                        <td class="help" th:text="${c.shortTitle}" th:title="${c.shortTitle}"></td>
+                        <td th:text="${c.folderName}" th:title="${c.folderName==null?'未知':c.folderName}"></td>
+                        <td th:text="${c.level}"></td>
+                        <td th:text="${c.source}"></td>
+                        <td>
+                            <img class="prompt" th:if="${c.indexImage!=null and c.indexImage!=''}" th:title="${c.indexImage}" th:src="${c.indexImage}" />
+                        </td>
+                        <td><a th:href="${c.linkerurl}" target="_blank" th:text="${c.linkerurl}" th:title="${c.linkerurl}"></a></td>
+                        <td th:text="${c.sysUserName}"></td>
+                        <td th:text="${c.createtime!=null?#dates.format(c.createtime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td th:text="${c.updatetime!=null?#dates.format(c.updatetime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td>
+                            <a th:id="${c.id}" onclick="deleteContent(this);" class="btn btn-xs btn-danger">删除</a>
+                            <span>|</span>
+                            <a th:id="${c.id}" onclick="setStatus(0,this);" class="btn btn-xs btn-info">恢复</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("部门管理");
+            $(".hoverTip").popover({
+                placement : 'right',
+                title:'<div style="text-align:left; font-size:12px;">提示</div>',
+                html: 'true',
+                content : "<div style='width:350px;'>1.多个以 <kbd>Enter</kbd> 键区分<br/> 2.多个时单击某个可以直接修改<br/> 3.多个时单击某个再删除其中文字即可删除当前标签</div>",
+                animation: false
+            });
+            $(".save").click(function(){
+                $('#form').ajaxSubmit(function (res) {
+                    if (res.code == 200) {
+                        layer.confirm("添加成功，是否继续新增？", {
+                            btn: ['确定', '取消']
+                        }, function () {
+                            window.location.href = "/base/dept/add.html";
+                        }, function () {
+                            window.location.href = "/base/dept/list.html";
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 3000});
+                    }
+                });
+            });
+        });
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">部门管理</a><span>></span>
+        <em>新增部门</em>
+    </div>
+    <div class="main">
+        <form action="/base/dept/save.json" method="post" class="form-horizontal" id="form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">部门名称：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="deptName" placeholder="请输入部门名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">分组名称：</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control col-md-4" name="groupName" data-toggle="tags" placeholder="请输入分组名称,多个以回车键区分"/>
+                    <!--<img src="/images/confirm.png" class="imgTip" data-toggle="tooltip" data-placement="right"
+                                         title="1.多个以回车键区分 2.多个时单击某个可以直接修改 3.多个时单击某个再删除其中文字即可删除当前标签" />-->
+                    <img src="/images/confirm.png" class="hoverTip float-left" data-trigger="hover" data-toggle="popover" data-placement="right"/>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <input type="button" class="save btn btn-danger"  value="保存" />
+                <input type="button" name="cancel" class="btn btn-warning" value="取消" onclick="cancleGoBack();" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,302 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td,
+hr,
+button,
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+	margin: 0;
+	padding: 0
+}
+body,
+button,
+input,
+select,
+textarea {
+	font: normal 14px/18px 'sans-serif', Arial, "Lucida Grande", Verdana, "Microsoft YaHei", hei, simsun;
+}
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section,
+iframe {
+	display: block
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Microsoft YaHei", hei, simsun;
+	font-size: 100%;
+	font-weight: normal;
+}
+address,
+cite,
+dfn,
+em,
+var,
+i {
+	font-style: normal;
+	font-weight: 400
+}
+dfn {
+	font-family: Arial
+}
+ul,
+ol {
+	list-style: none
+}
+a {
+	color: #000;
+	text-decoration: none
+}
+a:hover {} p {
+	display: inline-block;
+}
+body {
+  width: 100%;
+  height: 100%;
+  font-family: Hiragino Sans GB, Arial, Helvetica, "����", sans-serif;
+  color: #878787;
+  font-size: 16px;
+  -webkit-touch-callout: inherit;
+  -webkit-user-select: auto;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background-color: #EEEEEE;
+  z-index: 1;
+}
+.wrap{
+	text-align: center;
+	  margin: auto;
+  padding: 0px;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+.headline{
+	text-align: center;
+  background-color: #f05e5f;
+  font-size: 1.2rem;
+  color: #fff;
+  width: 100%;
+  padding: 10px 0px;
+  font-weight: bold;
+}
+.value {
+	margin-right: 1em;
+	font-size: 14px;
+	color: #F05F5F;
+	font-style: normal;
+	font-weight: normal;
+}
+.select_title {
+	margin: 2px;
+	display: inline-block;
+	width: 20%;
+	font-weight: bold;
+	/* text-align: right; */
+	line-height: 60px;
+}
+.selectBox {
+	background-image: url(../../images/weixin/coupon.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin: auto;
+	margin-bottom: 2%;
+	width: 90%;
+	border-radius: 5px;
+	background-color: white;
+  display: block;
+  font-size: 15px;
+	
+}
+.selectBox:nth-last-child{
+	margin-bottom: 50px;
+}
+.duration,
+.source {
+	font-size: 12px;
+	color: #B1B1B1;
+}
+.selectBox li {
+	display: inline-block;
+}
+.selectBox .select_title {
+	margin-left: 10px;
+	font-size: 15px;
+	color: orange;
+	/*text-align: center;*/
+}
+.select_title span {
+	font-size: 30px;
+}
+.selectBox .select {
+	width: 100%;
+	text-align: left;
+}
+.coupon_content {
+	display: inline-block;
+	height: 75px;
+	vertical-align: middle;
+	padding-top: 18px;
+    padding-left: 10px;
+}
+.coupon_content li {
+	display: block;
+	padding: 0px;
+	padding-bottom: 5px;
+}
+.coupon_title {
+	font-size: 15px;
+	color: black;
+}
+.coupon_no{
+	background-color: #EEEEEE;
+	width: 100%;
+	height: 40px;
+	/*text-align: right;*/
+	/*margin: 0px 5%;*/
+	/*position: fixed;*/
+	bottom: 20px;
+	
+}
+.coupon_no p{
+	font-size: 12px;
+}
+.coupon_no ul{
+	height: 30px;
+}
+.coupon_no li{
+	display: inline-block;
+	width: 30%;
+	height: 30px;
+	/*margin-top: -2px;*/
+	text-align: center;
+	padding: 0px 2%;
+	margin-bottom: 10px;
+}
+.coupon_no li img{
+	width: 18px;
+	padding-top: 4px;
+}
+.coupon_no li:nth-child(1){
+	width: 60%;
+}
+.coupon_no li input{
+	width:100%;
+	border: hidden;
+	border-right: 1px solid #dadada;
+	outline: hidden;
+	height: 30px;
+	-moz-box-shadow:0px 1px 5px #999 inset;               /* For Firefox3.6+ */
+	-webkit-box-shadow:0px 1px 5px #999 inset;            /* For Chrome5+, Safari5+ */
+	box-shadow:0px 1px 5px #999 inset;    
+	border-radius: 5px;                /* For Latest Opera */
+}
+/*.coupon_no li:nth-child(2){
+	width: 10%;
+}*/
+.coupon_no li:nth-child(2){
+	width: 25%;
+	background-color: #F05E5F;
+	color: white;
+	font-size: 20px;
+	height: 26px;
+	border-radius: 5px;
+	padding-top: 4px;
+}
+.step{
+	display: inline-block;
+	width: 49%;
+	font-weight: bold;
+	margin: auto;
+	background-color: white;
+	font-size: 15px;
+	padding: 10px 0px;
+	border-bottom: 2px solid white;
+}
+#step1{
+	/*border-right: 1px solid #EEEEEE;*/
+}
+.active{
+	border-bottom-color: #f05e5f;!important
+}
+.page1,.page2{
+	padding-top: 4%;
+	background-color: #eeeeee;
+}
+.page img{
+	width: 50%;
+	padding-top: 20%;
+}
+.page p{
+	display: block;
+	color: #bbbbbb;
+	font-weight: bold;
+}
+.contentBox{
+	background-color: white;
+}
+.popup-hide{-webkit-transform:scale3d(0,0,1);-moz-transform:scale3d(0,0,1);-webkit-transition:-webkit-transform .15s;-moz-transition:-webkit-transform .15s}
+.popup-show{-webkit-transform:scale3d(1,1,1);-moz-transform:scale3d(1,1,1);}
+.open,
+.card-list-box{z-index:102;position:fixed ;width:90%;max-height:30%;background:#fff; top: 64%;  left: 5%;}
+.open section{padding:0 10px 15px;}
+.open header,
+.open h1{line-height: 20px; background-color: #F05E5F;}
+.open h1,
+.note-chart article,
+.cash-chart article,
+.quick-pay {color: #999;}
+.open header,
+.take-bool{text-align: center;}
+.open div{max-height:70px;padding: 5px;overflow: auto;border: 1px solid #eee;color: #999;}
+.open h2{height:40px;line-height:40px;margin:0 auto;border-radius:5px;background-color:#f60;color:#fff;text-align:center;}
+.open h6{height:40px;line-height:40px;margin:20px 0 0;border-radius:5px;background-color:#f60;color:#fff;text-align:center;}
+.open i{height: 70px;display: block;margin-top: 50px;}
+.open p{margin: 10px;}
+.tc{text-align: center;}
+.hide{display: none;}
+

@@ -1,0 +1,25 @@
+.select_title{
+    width: 23%;
+}
+div.select{width: 100%;overflow: hidden;min-height: 40px;padding: 0.5em 0;}
+div.select div.select1{width: 10%;margin-left: 2%;float: left;position: relative;}
+div.select div.select2{width: 25%;float: left;margin-left:14px;}
+div.select div.select2-title{font-size: 15px;font-weight: 700;}
+div.select div.select3{width: 55%;float: left;position: relative;}
+div.select div.select4{width: 2.4%;float: left;position: relative;margin-left: 2.6%;}
+div.select div.sp1,div.select div.sp3,div.select div.sp4{width: 100%;}
+div.select div.sp1 img,div.select div.sp4 img{width: 100%;font-size: 0;vertical-align: top;display: block;}
+.overFlow{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.posiAb{position: absolute;left: 0;top: 50%;}
+.centY{transform: translateY(-50%);-webkit-transform: translateY(-50%);}
+.main{
+   overflow-y: auto;
+}
+#carInfor,#carInforLid,.selectBox input{
+    font-size: 14px;color: #878787;
+}
+.spe-title{
+    color: #555555!important;
+    font-size: 15px!important;
+    font-weight: 700!important;
+}

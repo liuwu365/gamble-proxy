@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <style>
+        .row{ margin:10px; }
+        .col-md-5{ margin-left:10px; border:1px solid #afafaf; }
+        select, input{ height:35px }
+        input[type=checkbox]{ margin:4px 0; }
+    </style>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("角色管理");
+            var roleId = GetQueryString("id");
+            $.ajax({
+                type: "POST",
+                data: {"roleId": roleId},
+                url: '/base/role/getRoleRes.html',
+                dataType: 'json',
+                success: function (res) {
+                    for (index in res.t) {
+                        $("input[name='res']:checkbox[value='" + res.t[index].resId + "']").prop('checked', 'true');
+                    }
+                }
+            });
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $("[name='roleId']").val(roleId);
+                    $(form).ajaxSubmit(function (res) {
+                        layer.msg(res.msg, {time: 3000});
+                        /*if (res.code == 200) {
+                         window.location.href = "/base/role/list.html";
+                         }*/
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+        });
+        /*获取页面参数*/
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != "") return unescape(r[2]);
+            return "";
+        }
+        //]]>
+        function smenu(obj, id) {
+            $("input[_key='menu_1_" + id + "']").each(function () {
+                $(this).prop("checked", obj.checked);
+            });
+        }
+        function menu_1(obj, id, pid) {
+            if (obj.checked == true) {
+                $("input[_key='menu_" + pid + "']").prop("checked", true);
+            } else {
+                //先遍历子级这一组是否都没有选中，都没有选中则父级也取消选中
+                var flag = true;
+                $("input[_key='"+$(obj).attr("_key")+"']").each(function () {
+                    if ($(this).is(':checked')) {
+                        flag = false;
+                    }
+                });
+                if (flag) {
+                    $("input[_key='menu_" + pid + "']").prop("checked", false);
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/role/list.html">角色管理</a><span>></span>
+        <em>分配权限</em>
+    </div>
+    <div class="main">
+        <form action="/base/role/saveRoleRes.json" method="post" class="form-horizontal" id="form">
+            <input type="hidden" name="roleId" />
+            <div class="row">
+                <div class="col-md-4" style="margin-left:100px;border: 1px solid #afafaf;">
+                    <div class="row">
+                        <div class="col-md-5">
+                            一级菜单：
+                        </div>
+                        <div class="col-md-5">
+                            二级菜单：
+                        </div>
+                    </div>
+
+                    <div class="row" th:each="a,aStat : ${list}">
+                        <div class="col-md-5">
+                            <input style="width:20px" type="checkbox" name="res" th:attr="_key=${'menu_'+a.id}" onclick="smenu(this,this.value)" th:value="${a.id}" th:text="${a.name}" />
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row" th:each="b,bStat : ${a.children}">
+                                <input style="width:20px" type="checkbox" name="res" th:alt="${a.id}" th:attr="_key=${'menu_1_'+a.id}" onclick="menu_1(this,this.value,this.alt)" th:value="${b.id}"
+                                       th:text="${b.name}" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

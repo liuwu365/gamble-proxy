@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="renderer" content="webkit"/>
+    <title>博彩管理后台</title>
+    <script src="/js/DateUtil.js"/>
+    <script type="application/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#work").click();
+            showSide("客服用户查询");
+            var defaultOrderNo = 'CW20170627001';
+            var tabsData = [
+                {"id": "home", "url": ""},
+                {"id": "ios", "url": ""},
+                {"id": "jmeter", "url": ""},
+                {"id": "ejb", "url": "/work/order/{0}/getOrder.json"}
+            ];
+
+            $(tabsData).each(function () {
+                $("a[href='#" + this.id + "']").bind('click', {
+                    id: this.id,
+                    url: this.url
+                }, tabsHandler)
+            });
+            function tabsHandler(event) {
+                var data = event.data;
+                showTabs(data.id, data.url);
+                return false; //阻止默认a标签响应
+            }
+
+            function showTabs(tabsId, url) {
+                $("a[href='#" + tabsId + "']").tab('show');
+                var $tabContent = $('#' + tabsId);
+                console.log($tabContent.length);
+                console.log("url:" + url.format(defaultOrderNo));
+                $tabContent.load(url.format(defaultOrderNo), {}, function (data) {
+                    console.log(data);
+                });
+            }
+        });
+
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">客服管理</a><span>></span>
+        <a href="/base/resources/list.html">客服用户查询</a><span>></span>
+        <em>客服用户查询列表</em>
+    </div>
+    <div class="main wrapper">
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="wrap">
+                    <form action="/base/resources/list.html" method="POST" class="form-inline" id="searchForm">
+                        <input type="hidden" id="page" name="page" th:value="${page.page}"/>
+                        <input type="hidden" name="totalPage" th:value="${page.totalPage}"/>
+                        <div class="form-group">
+                            <label> 账号</label>
+                            <input type="text" name="filter['name']" class="form-control" placeholder="账号"
+                                   th:value="${page.filter['name']}"/>
+                        </div>
+                        <div class="form-group">
+                            <label> 姓名</label>
+                            <input type="text" name="filter['name']" class="form-control" placeholder="姓名"
+                                   th:value="${page.filter['name']}"/>
+                        </div>
+                        <div class="form-group">
+                            <label> 订单号</label>
+                            <input type="text" name="filter['orderNo']" id="orderNo" class="form-control"
+                                   placeholder="订单号"
+                                   th:value="${page.filter['name']}"/>
+                        </div>
+                        <div class="pull-right">
+                            <a href="javascript:;" class="btn btn-default" onclick="location.reload();">按条件搜索</a>
+                            <!--<button type="button" class="btn btn-primary">（首选项）Primary</button>-->
+                            <button type="reset" class="btn btn-info">重置</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <ul id="myTab" class="nav nav-tabs center-block">
+                    <li class="active">
+                        <a href="#home" data-toggle="tab">
+                            账户信息
+                        </a>
+                    </li>
+                    <li><a href="#ios" data-toggle="tab">下注信息</a></li>
+                    <li><a href="#jmeter" data-toggle="tab">充提款信息</a></li>
+                    <li><a href="#ejb" data-toggle="tab">工单信息</a></li>
+
+                </ul>
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="home">
+                        <p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
+                    </div>
+                    <div class="tab-pane fade" id="ios">
+                        <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+                            TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+                    </div>
+                    <div class="tab-pane fade" id="jmeter">
+                        <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+                    </div>
+                    <div class="tab-pane fade" id="ejb">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

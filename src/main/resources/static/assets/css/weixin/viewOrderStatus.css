@@ -1,0 +1,91 @@
+.order_title{
+	text-align: center;
+	background-color: #f05e5f;
+	font-size: 14px;
+	color: #fff;
+	width: 34%;
+	margin: -3px;
+	padding: 11px 0px;
+	font-weight: bold;
+	display: inline-block;
+	border: hidden;
+	font-weight: bold;
+}
+ul{
+	font-weight: bold;
+}
+ul,li{
+	color: black;
+	list-style-type:none;
+	margin:0px;
+	padding: 0px;
+	line-height: 20px;
+} 
+
+.detail{
+	width:94%;
+	text-align: left;
+	padding: 3%;
+}
+.hyperLink{
+	width:20%;
+	text-align: center;
+	color:#F05E5F;
+	float:right;
+	background: url(../../../assets/images/weixin/iconRight.png) right no-repeat;
+	background-size: 6px;
+	padding-right:10px;
+	margin-right:15px;
+	font-size: 12px;
+}
+.btn{
+	margin: auto;
+	font-size: 14px;
+	display: inline-block;
+}
+.finishedOrder{
+	width: 45%;
+}
+
+.evaluate_order{
+	width:25%;
+}
+.selectBox{
+	margin-top: 3%;
+}
+.selectBox li{
+	font-size: 12px;
+}
+.hide{
+	border-bottom: 5px solid #F05E5F;
+}
+.active{
+	border-bottom: 5px solid white;
+
+}
+.select_title{
+	width: 25%;
+}
+.btn_wrap{
+	width: 100%;
+	text-align: center;
+	font-size: 12px;
+}
+.check_report{
+	width: 16%;
+}
+.check_report1{
+	width: 20%;
+}
+.check_report2{
+	width: 20%;
+}
+.check_report3{
+	width:60%;
+}
+.btn{
+	font-size: 12px;
+	margin:10px 1px ;
+	padding: 10px 10px;
+}
+

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click();
+            showSide("栏目列表");
+            _LoadSelectBox.getFatherFolder(); //加载父级栏目
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: 'help-inline',
+                focusInvalid: false,
+                ignore: "",
+                rules: {name: {required: true}},
+                messages: {name: {required: "请输入栏目名称"}},
+                submitHandler: function (form) {
+                    $(".ename").attr("disabled",false);
+                    $(form).ajaxSubmit(function (res) {
+                        if (res) {
+                            layer.msg("操作成功了！", {time: 1000},function(){
+                                window.location.href = "/news/folder/folder_list.html";
+                            });
+                        } else {
+                            layer.msg("操作失败了！", {time: 6000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+            //生成标识符
+            $("#folder_name").blur(function () {
+                $.ajax({
+                    type: "get",
+                    url: "/news/folder/chineseToEnglish/" + $("#folder_name").val(),
+                    dataType: "text",
+                    success: function (data) {
+                        if (data) {
+                            $(".ename").val(data);
+                        }
+                    }
+                });
+            });
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/folder/folder_list.html">栏目管理</a><span>></span>
+        <em>新增栏目</em>
+    </div>
+    <div class="main">
+        <form action="/news/folder/folder_add" method="post" class="form-horizontal" id="form">
+            <div class="row">
+                <label class="col-xs-1 control-label">栏目名称：</label>
+                <div class="col-xs-2">
+                    <input type="text" id="folder_name" class="form-control" name="name" placeholder="请输入栏目名称" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">标识符：</label>
+                <div class="col-xs-2">
+                    <input type="text" class="ename form-control" name="ename" disabled="disabled" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">父级标签：</label>
+                <div class="col-xs-2">
+                    <select class="parentFolder form-control" name="parentid">
+                        <option value="0">根目录</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">排序：</label>
+                <div class="col-xs-2">
+                    <input type="number" min="0" max="99" class="form-control" placeholder="请输入排序信息" name="sort"
+                           onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">栏目描述：</label>
+                <div class="col-xs-2">
+                    <textarea class="form-control" placeholder="请输入栏目描述" name="description" cols="8" rows="8"></textarea>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

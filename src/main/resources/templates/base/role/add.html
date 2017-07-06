@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("角色管理");
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit(function (res) {
+                        if (res.code == 200) {
+                            layer.confirm("添加成功，是否继续新增？", {
+                                btn: ['确定', '取消']
+                            }, function () {
+                                window.location.href = "/base/role/add.html";
+                            }, function () {
+                                window.location.href = "/base/role/list.html";
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 3000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+
+            });
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/role/list.html">角色管理</a><span>></span>
+        <em>新增角色</em>
+    </div>
+    <div class="main">
+        <form action="/base/role/save.json" method="post" class="form-horizontal" id="form">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">角色名称：</label>
+                    <input class="col-md-6" name="name" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">标识：</label>
+                    <input class="col-md-6" name="roleKey" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 text-right">描述：</label>
+                    <input class="col-md-6" name="description" />
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

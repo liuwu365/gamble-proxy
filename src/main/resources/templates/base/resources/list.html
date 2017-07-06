@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        $(function () {
+            $(".newadd").click(function () {
+                window.location = '/base/resources/add.html';
+            });
+            showSide("资源管理");
+            _LoadSelectBox.getParendMenu();
+        });
+        function deleteHero(doc) {
+            console.log(doc);
+            layer.confirm("确定删除此资源吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.ajax({
+                    url: "/base/resources/delete",
+                    dataType: "json",
+                    type: "get",
+                    data: {id: doc.id, resourceName: doc.alt},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 3000});
+                        window.location.reload();
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //修改优先级
+        function updateLevel(doc) {
+            var obj = $(doc);
+            var menuName = obj.attr("menuName");
+            var level = obj.attr("level");
+            layer.open({
+                type: 1,
+                title: '修改用户【' + menuName + '】的优先级',
+                skin: 'layui-layer-demo',
+                //closeBtn: 0, //不显示关闭按钮
+                shift: 2,
+                shadeClose: false,
+                area: ['420px', ''],
+                content: '<div class="alertDiv">优先级：<input type="text" id="level" name="level" value="' + level + '"/></div>',
+                btn: ['保存', '取消'],
+                yes: function () {
+                    var flag = _CommonJS.isDigit($("#level").val());
+                    if (!flag) {
+                        layer.msg('输入只能为数字', {time: 1000});
+                        return;
+                    }
+                    $.ajax({
+                        url: '/base/resources/updateLevel.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {resId: doc.id, level: $("#level").val()},
+                        success: function (data) {
+                            if (data.code == 200) {
+                                window.location.reload();
+                            } else {
+                                layer.msg(data.message, {time: 6000});
+                            }
+                        },
+                        error: function () {
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel: function () {
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/resources/list.html">资源管理</a><span>></span>
+        <em>资源列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/base/resources/list.html" method="POST" class="form-inline" id="searchForm">
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <input type="hidden" name="menuId" th:value="${menuId}" />
+                <div class="form-group">
+                    <select class="parentMenuBox form-control" name="filter['parentId']">
+                        <option value="">请选择菜单</option>
+                    </select>
+                    <input type="text" name="filter['name']" class="form-control" placeholder="资源名称搜索" th:value="${page.filter['name']}" />
+                    <button onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" class="newadd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>资源ID</td>
+                        <td>资源名称</td>
+                        <td>类型</td>
+                        <td>key</td>
+                        <td>url</td>
+                        <td>优先级</td>
+                        <td>是否隐藏</td>
+                        <td>描述</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r:${page.result}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.name}"></td>
+                        <td th:text="${r.type == 0?'目录':r.type==1?'菜单':r.type==2?'按钮':'未知'}"></td>
+                        <td th:text="${r.resKey}"></td>
+                        <td th:text="${r.resUrl}"></td>
+                        <td>
+                            <div>
+                                <span th:text="${r.level==null? 0:r.level}"></span>
+                                <a class="xg" href="javascript:;" th:id="${r.id}" th:title="${r.level}" th:attr="menuName=${r.name},level=${r.level}" onclick="updateLevel(this);" title="修改"></a>
+                            </div>
+                        </td>
+                        <td th:text="${r.isHide == true?'是':'否'}"></td>
+                        <td class="processTd descHtml" style="display: none"></td>
+                        <td class="processTd descHtml2"></td>
+                        <input type="hidden" class="desc" th:value="${r.description}" />
+                        <script>
+                            var val = $(".desc:last").val();
+                            $(".descHtml:last").html(val);
+                            var text = $(".descHtml:last").text();
+                            $(".descHtml2:last").html(text);
+                        </script>
+                        <td>
+                            <a class="btn btn-xs btn-danger" th:id="${r.id}" th:alt="${r.name}" onclick="deleteHero(this);">删除</a>
+                            <span>|</span>
+                            <a th:href="@{/base/resources/edit.html(id=${r.id})}" class="btn btn-xs btn-info">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

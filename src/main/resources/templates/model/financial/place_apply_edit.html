@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head lang="en">
+    <meta charset="UTF-8"/>
+    <title></title>
+
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#finance").click();
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: 'help-inline',
+                focusInvalid: false,
+                ignore: "",
+                rules: {name: {required: true}},
+                messages: {name: {required: "请输入栏目名称"}},
+                submitHandler: function (form) {
+                    $(".ename").attr("disabled",false);
+                    $(form).ajaxSubmit(function (res) {
+                        if (res.code == 200) {
+                            layer.msg("操作成功！", {time: 1000}, function () {
+                                window.location.href = "/financial/pay/channel/list.html";
+                            });
+                        } else {
+                            layer.msg("操作失败！", {time: 3000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+        });
+        //]]>
+        $(function () {
+
+            var val = $("#webLocation").val();
+            $(":checkbox[name='webCheckboxes'][value='" + val + "']").prop("checked", "checked");
+            var val = $("#appLocation").val();
+            $(":checkbox[name='appCheckboxes'][value='" + val + "']").prop("checked", "checked");
+
+        });
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">财务管理</a><span>></span>
+        <a href="#">支付渠道管理</a><span>></span>
+        <a href="#">应用位置设置</a><span>></span>
+    </div>
+    <form action="/financial/pay/channel/applySave.json" class="form-horizontal" method="post" id="form">
+        <input type="hidden" th:value="${payChannels.appLocation}" id="appLocation"/>
+        <input type="hidden" th:value="${payChannels.webLocation}" id="webLocation"/>
+        <input type="hidden" th:value="${payChannels.id}" id="id" name="id"/>
+        <div class="form-group container-list" >
+            <input type="text" name="payChannelsName" class="form-control" th:value="${payChannels.payChannelsName}" />
+        </div>
+        <div class="container-list">
+            <div class="stripe">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="backtrhd">
+                        <td width="100px;" >选择</td>
+                        <td width="100px;" >WEB</td>
+                        <td width="100px;" >备注</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="w:${webList}">
+                        <td width="50px;"><input type="radio" name="webCheckboxes" th:value="${w.code}" th:checked="${w.code == payChannels.webLocation}"/></td>
+                        <td class="pay" th:text="${w.pay}"></td>
+                        <td class="note" th:text="${w.note}"></td>
+                        <!--<td class="code" th:text="${w.code}" hidden="hidden" th:value="${w.code}"></td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stripe">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr class="backtrhd">
+                        <td width="100px;" >选择</td>
+                        <td width="100px;" >APP</td>
+                        <td width="100px;" >备注</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="a:${appList}">
+                        <td width="50px;"><input type="radio" name="appCheckboxes" th:value="${a.code}" th:checked="${a.code == payChannels.appLocation}"/></td>
+                        <td class="pay" th:text="${a.pay}"></td>
+                        <td class="note" th:text="${a.note}"></td>
+                        <!--<td class="code" th:text="${a.note}" hidden="hidden" th:value="${a.note}"></td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-xs-12 operate">
+            <button class="btn btn-danger">更新</button>
+            <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+        </div>
+    </form>
+</div>
+</body>
+</html>

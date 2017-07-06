@@ -1,0 +1,249 @@
+/*makeOrder.html*/
+.menu0 li ul>div,.menu0 li ul>div span,.menu0 li ul>li,.menu0 li ul li>div,.menu0 li ul li>div span{
+    font-size: 16px;
+}
+.menu0 li ul li{
+    overflow: hidden;
+}
+.menu0 li ul li div span:nth-child(3){
+    width:calc(30% - 30px);
+    width: -webkit-calc(30% - 30px);
+    float: right;
+}
+.menu0 ul div span {
+   width: calc(75% - 30px);
+    width: -webkit-calc(75% - 30px);
+}
+.menu0 li ul li div span{
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;vertical-align: middle;
+}
+.menu0 div span:first-child {
+    width: 5%;
+    padding: 0 0 0 30px;
+}
+.menu0 li ul li div span:nth-child(2){
+    width: 60%;
+}
+.menu0 span.list-menu{
+    font-size: 18px;
+    color: #000;
+}
+.menu0 span.list-itemtotal{
+    width: 100%;
+    display: block;
+    padding: 10px 0;
+    background-color: #d3d3d6;
+    position: relative;
+}
+.menu0 span.list-itemtotal:after{
+    width: 22px;
+    height: 22px;
+    content: '';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    margin-top: -11px;
+    background: url("../images/weixin/iconRight1.png") no-repeat center;
+}
+.menu0 span.list-itemtotal.active:after{
+    background: url("../images/weixin/iconDown1.png") no-repeat center;
+}
+.menu0 div{
+    width: 100%;
+}
+#payAmount{
+
+}
+.pay-total{
+    text-align: right; padding:5px 13% 5px 0;font-size: 16px;
+}
+.pay-total #showProjectPayAmount{
+    font-size: 16px;
+}
+.weixing,.cash{
+    color:#555;
+}
+.content.special{
+    width: 100%; overflow: hidden;vertical-align: middle; float: none;display: block;
+}
+.content.special p{
+    width: 100%;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+#show1{
+    margin: 0 auto;left:0;right:0;width:100%;box-sizing: border-box;
+}
+div.show{
+    position: fixed;padding: 0;border: 0;margin-left: 10%;height: auto;
+}
+.show .list-item{
+    margin-top: 10px;
+}
+.show button{
+    margin:10px 0;background: #f05e5f;
+    padding: 5px 10px;color: #fff;border:none;outline: none;border-radius: 3px;
+}
+.show button#confirmCoupon{
+    margin-left: calc(45% - 50px);margin-right: 10%; margin-left: -webkit-calc(45% - 50px);
+}
+.show label{
+    display: block; overflow: hidden;
+}
+.show label input{
+    vertical-align: middle;
+}
+.show .list-item label{
+    position: relative;
+    vertical-align: middle;
+}
+.show .list-item label .span-radio{
+    width: 18px;
+    height: 18px;
+    position: absolute;left: 3px;
+    top: 3px;
+    background: url("../images/weixin/checkBox-img.png") no-repeat left center;
+    background-position: 0px -18px;
+}
+.show .list-item label input{
+    opacity: 0;
+    visibility: hidden;
+}
+.show .list-item label.selected  .span-radio{
+    background-position: 0px 0px;
+}
+.show label div.left{
+    width: 15%;float: left;
+}
+.show label div.left p{
+    display: inline-block;padding-left: 10px;line-height: 25px;
+}
+.show label div.right{
+    width: 85%;float: left; overflow: hidden;
+}
+.show label div.right p{
+    width: 100%;float: left;white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color: #555555;padding-bottom: 5px;
+}
+/*.show label div.right p:nth-child(1){*/
+    /*width: 40%*/
+/*}*/
+.show label div.right p.validity{
+    width: 100%;
+}
+.btn2{
+    margin: 1% 15%;
+}
+div.selectBox div.right{
+    width: 55%;
+    display: inline-block;
+}
+.list1 {
+    position: relative;overflow: hidden;
+}
+div.select{width: 100%;overflow: hidden;height: 40px;padding: 0.5em 0;}
+div.select div.select1{width: 10%;margin-left: 2%;float: left;position: relative;height: 40px;}
+div.select div.select2{width: 20%;float: left;margin-left: 1%;height: 40px;font-size: 16px}
+div.select div.select2-title{font-size: 15px;font-weight: 700;}
+div.select div.select3{width: 55%;float: left;position: relative;height: 40px;font-size: 14px;}
+div.select div.select4{width: 2.4%;float: left;position: relative;margin-left: 2.6%;min-height: 40px;}
+div.select div.sp1,div.select div.sp3,div.select div.sp4{width: 100%;}
+div.select div.sp1 img,div.select div.sp4 img{width: 100%;font-size: 0;vertical-align: top;display: block;}
+.overFlow{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;font-size:14px;}
+.posiAb{position: absolute;left: 0;top: 50%;}
+.centY{transform: translateY(-50%);-webkit-transform: translateY(-50%);}
+.select_title>p{
+    font-size: 16px;
+}
+.content>input,.content>p,.content>span{
+    font-size: 14px;color: #555;
+}
+#show2{height: auto;overflow-x: hidden;overflow-y: scroll;padding-bottom: 20px}
+.menu0 div {padding: 0;}
+.menu0 li ul>div,.menu0 li ul li>div{
+    padding: 7px 0;
+}
+.menu0 ul div span{
+    vertical-align: top;
+}
+.menu0 ul div span.money{
+    vertical-align: middle;
+}
+div.weixing label,div.cash label{
+    padding-left: 20px;
+    background: url("../images/weixin/checkBox-img.png") no-repeat left center;
+    background-position: 0px -18px;
+    height: 18px;
+    display: block;
+    line-height: 18px;
+    font-size: 14px;
+}
+div.weixing input,div.cash input{
+    opacity: 0;display: none;
+}
+div.weixing input:checked + label,div.cash input:checked + label{
+    background-position: 0px 0px;
+}
+p.p-info{
+    width: 100%;
+    font-size: 18px;
+    background: #F0EFF5;
+    margin-bottom: 5px;
+    padding: 15px 35px 5px 0;
+    color: #000;
+    box-sizing: border-box;
+    position: relative;
+
+}
+span.spe-close{
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 2px;
+    top: 10px;
+    background: url("../images/weixin/close-pop.png") no-repeat right center;
+    background-size: cover;
+}
+.menu0 div span:last-child{
+    text-align: left;
+}
+.on{
+    background-size: 30px;
+}
+.off{
+    background-size: 30px;
+}
+#show2 ul li{
+    border-bottom: none;
+}
+#show2>ul>li,#show2>ul>li input,#show2>ul>li textarea{
+    font-size: 16px;width: 70%;vertical-align: top;
+}
+#show2>ul>li{
+    width: 80%;
+}
+#show2>ul>li select{
+    font-size: 16px
+}
+ul.select_hour{
+    width: 100%;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    top: 32px;
+    box-shadow:  0 0 6px #000;
+    border-bottom: 1px solid #ddd;
+}
+ul.select_hour li{
+    font-size: 12px;
+    width: 14.285%;
+    box-sizing: border-box;
+    text-align: center;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    float: left;
+    padding: 8px 0;
+}
+.spe-title{
+    color: #555555!important;
+    font-size: 15px!important;
+    font-weight: 700!important;
+}
+

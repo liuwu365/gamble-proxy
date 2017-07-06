@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        $(function () {
+            $(".newadd").click(function () {
+                window.location = '/base/user/add.html';
+            });
+            showSide("后台用户管理");
+        });
+        function deleteUser(doc) {
+            layer.confirm("确定删除此用户吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.ajax({
+                    url: "/base/user/delete",
+                    dataType: "json",
+                    type: "get",
+                    data: {id: doc.id, userName: doc.alt},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        function lockUser(doc) {
+            console.log(doc.id)
+            layer.confirm('确定<span class="red">' + $(doc).text() + '</span>此用户吗？', {
+                btn: ['确定', '取消']
+            }, function () {
+                var lockValue = $(doc).text() == "锁定" ? true : false;
+                $.ajax({
+                    url: "/base/user/lockUser",
+                    dataType: "json",
+                    type: "get",
+                    data: {id: doc.id, lock: lockValue, accountName: doc.alt},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 2000}, function () {
+                            window.location.reload();
+                        });
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        function operWorkOrder(doc) {
+            console.log(doc.id)
+            layer.confirm('确定执行此操作吗？', {
+                btn: ['确定', '取消']
+            }, function () {
+                var value = $(doc).text() == "是" ? false : true;
+                $.ajax({
+                    url: "/base/user/operWorkOrder",
+                    dataType: "json",
+                    type: "get",
+                    data: {id: doc.id, operWorkOrderVal: value},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 2000}, function () {
+                            window.location.reload();
+                        });
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">后台用户管理</a><span>></span>
+        <em>后台用户列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/base/user/list.html" method="POST" class="form-inline" id="searchForm">
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <div class="form-group">
+                    <input type="text" name="filter['user_name']" class="form-control" placeholder="用户名搜索" th:value="${page.filter['user_name']}" />
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" class="newadd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>用户ID</td>
+                        <td>用户名</td>
+                        <td>账号</td>
+                        <td>角色</td>
+                        <td>部门</td>
+                        <td>分组</td>
+                        <td>锁定/解锁</td>
+                        <td>是否允许操作工单</td>
+                        <td>创建时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody th:if="${#lists.size(page.result)>0}">
+                    <tr th:each="r:${page.result}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.userName}"></td>
+                        <td th:text="${r.accountName}"></td>
+                        <td th:text="${r.roleName}"></td>
+                        <td th:text="${r.deptName}"></td>
+                        <td th:text="${r.groupName}"></td>
+                        <td>
+                            <a href="#" th:id="${r.id}" th:alt="${r.accountName}" onclick="lockUser(this);" th:text="${r.locked == true? '解锁':'锁定'}"></a>
+                        </td>
+                        <td>
+                            <a href="#" th:id="${r.id}" onclick="operWorkOrder(this);" th:text="${r.operWorkOrder == true? '是':'否'}"></a>
+                        </td>
+                        <td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm')}" th:value="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td>
+                            <a th:href="@{/base/user/edit.html(id=${r.id})}" class="btn btn-xs btn-info">修改</a> |
+                            <a href="#" th:id="${r.id}" th:alt="${r.userName}" onclick="deleteUser(this);" class="btn btn-xs btn-danger">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

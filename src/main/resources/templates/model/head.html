@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <link rel="stylesheet" href="/css/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <script src="/js/lib/jquery.min.js" />
+    <script src="/js/lib/bootstrap/bootstrap-paginator.js" />
+    <script src="/js/lib/jquery.form.js" />
+    <script src="/js/lib/jquery.tags.min.js" />
+    <script src="/plugins/other/jquery.cxselect.min.js" />
+    <script src="/js/lib/bootstrap/bootstrap.min.js" />
+    <script src="/js/lib/bootstrap/jquery.validate.min.js" />
+    <!-- layui -->
+    <link rel="stylesheet" href="/plugins/layui/css/layui.css" />
+    <script src="/plugins/layui/layui.js" />
+    <!-- 文件上传 -->
+    <script src="/plugins/uploadify/jquery.uploadify.js" />
+    <script src="/plugins/uploadify/ajaxfileupload.js" />
+    <!-- ueditor -->
+    <script src="/ueditor/ueditor.config.js" />
+    <script src="/ueditor/ueditor.all.js" />
+    <script src="/ueditor/lang/zh-cn/zh-cn.js" />
+    <!-- 自定义js文件 -->
+    <script src="/js/Common.js" />
+    <script src="/js/CommonUtil.js" />
+    <script src="/js/LoadSelectBox.js" />
+    <script src="/js/longPolling.js" />
+    <script type="application/javascript">
+        //<![CDATA[
+        $(function () {
+            //默认选中网站设置模块
+            $("#base").click().parent("li").addClass("active");
+            $('#myModal').on('shown.bs.modal', function () {
+                $(".header").css("position","static");
+                $(".container ").css("padding-top","35px");
+                $("input[name='password']").focus();
+            })
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div>
+    <div class="model" style="display: none"></div>
+    <div class="header">
+        <div class="logo">
+            <!--<img src="/images/logo.png" alt="" />-->
+            <span>博彩管理后台</span>
+        </div>
+        <div class="navbar" role="navigation">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav" th:each="a : ${session.resList}">
+                    <li><a onclick="showMenu(this)" th:id="${a.resKey}" th:text="${a.name}"></a></li>
+                    <div style="display: none">
+                        <li><a href="/base/user/list.html"><i class="icon-home"></i>首页</a></li>
+                        <li th:each="b: ${a.children}">
+                            <a th:href="${b.resUrl}"><i th:class="${b.icon}"></i>
+                                <c th:text="${b.name}">游戏模型</c>
+                                <em></em></a>
+                        </li>
+                    </div>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown" id="admin-notify">
+                        <a href="#" id="drop-notify" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="icon-envelope icon-animated-vertical"></i>
+                            <span class="badge badge-success">0</span>
+                        </a>
+                        <ul class="dropdown-menu notice" role="menu" aria-labelledby="drop-notify">
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#" class="glyphicon glyphicon-lock">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                            <li><a href="#">&nbsp;消息1111111</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" id="drop" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="glyphicon glyphicon-user"></i>欢迎你
+                            <span th:if="session.sysUser" th:text="'，'+${session.backUserInfo.userName}"></span>
+                            <i class="caret"></i>
+                        </a>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="drop">
+                            <li><a href="#" data-toggle="modal" data-target="#myModal" class="glyphicon glyphicon-lock"> 修改密码</a></li>
+                            <li><a href="/logout.html" class="glyphicon glyphicon-log-out"> 退出系统</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <form action="/base/user/changePassword.json" method="post" class="form-horizontal" id="pwForm">
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">修改密码：</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">原密码：</label>
+                                <div class="col-sm-8"><input class="form-control" type="password" name="password" /></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">新密码：</label>
+                                <div class="col-sm-8"><input class="form-control" type="password" id="nPassword" name="nPassword" /></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">确认新密码：</label>
+                                <div class="col-sm-8"><input class="form-control" type="password" name="nPassword2" /></div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button class="btn btn-primary">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="side">
+        <ul class="list-unstyled">
+            <!--<li class="active"><a href="game/index.html"><i class="icon-game"></i>游戏模型</a></li>-->
+            <!--<li><a href="game/hero/list.html"><i class="icon-hero"></i>英雄模型</a></li>-->
+            <!--<li><a href="player/index.html"><i class="icon-rank"></i>队员模型</a></li>-->
+            <!--<li><a href="teaminfo/index.html"><i class="icon-team"></i>战队模型</a></li>-->
+            <!--<li><a href="process/index.html"><i class="icon-schedule"></i>赛程模型</a></li>-->
+            <!--<li><a href="contest/index.html"><i class="icon-event"></i>赛事模型</a></li>-->
+        </ul>
+    </div>
+
+    <div layout:fragment="content"></div>
+    <!--<div class="back-foot" th:fragment="footer">
+        <p>© 2004-2015 Perfect World Co.,Ltd. All rights reserved.银川元泰</p>
+    </div>-->
+</div>
+</body>
+</html>
+

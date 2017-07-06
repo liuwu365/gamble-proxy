@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="application/javascript">
+        showSide("登录日志");
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <em>登录日志</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/base/user/login/list.html" method="POST" class="form-inline" id="searchForm">
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <div class="form-group">
+                    <input type="text" name="filter['account_name']" class="form-control" placeholder="帐号搜索" th:value="${page.filter['account_name']}" />
+                    <button onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" class="newadd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>用户ID</td>
+                        <td>账号</td>
+                        <td>登录时间</td>
+                        <td>登录IP</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="r:${page.result}">
+                        <td th:text="${r.id}"></td>
+                        <td th:text="${r.userId}"></td>
+                        <td th:text="${r.accountName}"></td>
+                        <td th:text="${#dates.format(r.loginTime, 'yyyy-MM-dd HH:mm')}" th:value="${#dates.format(r.loginTime, 'yyyy-MM-dd HH:mm')}"></td>
+                        <td th:text="${r.loginIp}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

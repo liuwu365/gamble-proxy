@@ -1,0 +1,56 @@
+<div class="container-list" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <td>工单号</td>
+                <td>创建时间</td>
+                <td>创建人</td>
+                <td>工单类型</td>
+                <td>工单状态</td>
+                <td>用户ID</td>
+                <td>事件ID</td>
+                <td>工单描述</td>
+                <td>图片</td>
+                <td>聊天记录ID</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r:${data}">
+                <!--可查询详情-->
+                <td><a style="color:blue" href="#"><span id="orderNo" th:text="${r.orderNo}"></span></a></td>
+                <td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${r.accountName} + ' ' + ${r.createUserName}"></td>
+                <td th:text="${r.orderType.desc}"></td>
+                <td th:text="${r.status.desc}"></td>
+                <td th:text="${r.userName}"></td>
+                <td th:text="${r.eventId}"></td>
+                <td th:text="${r.problemDescription}"></td>
+                <td><img width="20px"
+                         th:src="${'http://192.168.1.12:8090/group1/M00/00/32/wKgBDle9asGAQsF0AADIT8JgwSE010.png'}"/>
+                </td>
+                <td th:text="${r.chatRecordId}"></td>
+                <td>
+                    <button class="btn btn-xs btn-danger" th:value="${r.orderNo}" href="#" id="gradOrder"
+                            onclick="gradOrder(this.value); return false;" th:if="${r.status.code==0}">我来处理
+                    </button>
+                    <a class="btn btn-xs btn-danger" th:value="${r.orderNo}" href="#" id="handlerComplete"
+                       onclick="handlerComplete(this)" th:if="${r.status.code==1}">处理完成</a>
+
+                    <a class="btn btn-xs btn-danger" th:value="${r.orderNo}" href="#" id="reject"
+                       th:if="${r.status.code==1}"
+                       onclick="reject(this)">驳回订单</a>
+                    <a class="btn btn-xs btn-danger" th:value="${r.orderNo}" th:if="${r.status.code==2}" href="#"
+                       id="toBeConfirmed"
+                       onclick="toBeConfirmed(this)">确认订单</a>
+
+                    <a class="btn btn-xs btn-danger" th:value="${r.orderNo}" th:if="${r.status.code==4}" href="#"
+                       id="updateOrder"
+                       onclick="updateOrder(this)">处理订单</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

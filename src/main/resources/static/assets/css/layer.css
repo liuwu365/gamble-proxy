@@ -1,0 +1,31 @@
+/*all---reset*/
+html,body{width: 100%;height: 100%;font-family: "微软雅黑";font-size: 16px;line-height: 1;}
+html,body,ul,li,ol,dl,dt,dd,p,img,a{padding: 0;margin: 0;}
+body{background-color: #eee;}
+ul,ol{list-style: none;}
+img{font-size: 0;vertical-align: top;border:none;}
+a{display: block;text-decoration: none;border: none;color: #fff;}
+.clearfix{display: table;clear: both;content: '';}
+.clearfix:after{display: table;clear: both;content: '';height: 0;}
+a,button,input{-webkit-tap-highlight-color:rgba(255,0,0,0);}
+
+/*内容区域*/
+div.container{width: 100%;height: 100%;overflow-x:hidden; overflow-y:auto;background: url(../../assets/images/yhq-bg_02.jpg) center no-repeat;background-size: cover;color: #fff;letter-spacing: 1px;}
+div.container div.content{width: 100%;margin: 0 auto 1rem;}
+div.container div.custom-pic{width: 26%;margin: 30% auto 1rem;}
+div.container img{width: 100%;}
+div.container div.txt-info{font-size: 1.2rem;line-height: 1.6rem;margin-bottom: 2rem;text-align: center;}
+div.container div.form-group{width: 78%;margin: 0 auto;text-align: center;}
+div.container div.form-group div.control-input{color: #454545;}
+div.container div.form-group div.control-input,div.container div.form-group a{width: 100%;padding: 0.7rem 0;border-radius: 5px;background: #fff;}
+div.container div.form-group div.control-input input{border: none;outline: none;text-align: center;}
+div.container div.form-group div.control-input input:focus{border: none;outline: none;}
+div.container div.form-group a.receive-coupons{display: block;background: #f05f5f;margin-top: 0.8rem;}
+div.container div.form-group p.new-welfare{font-size: 0.8rem;margin-top: 0.5rem;}
+div.container div.custom-pic-spe{margin-top: 10%;}
+div.container div.coupons-info{width: 56%;margin: 0 auto;color: #d75353;position: relative;}
+div.container div.coupons-info strong{position: absolute;left: 50%;top:50%;transform: translateY(-50%) translateX(-50%);-webkit-transform: translateY(-50%) translateX(-50%);font-size: 3rem;}
+div.container div.coupons-info div.occupying{width: 80%;height:100%;position: absolute;right: 0;top: 0;}
+div.container p.coupons-info-txt{text-align: center;margin: 1rem auto 1.3rem;font-size: 0.8rem;width: 100%;white-space:nowrap;}
+div.container p.coupons-info-txt span{color: #ff9933;display:inline-block;}
+div.container div.form-group a.download{display: block;background: #fff;margin-top: 0.8rem;color: #454545;}

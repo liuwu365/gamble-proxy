@@ -1,0 +1,61 @@
+.title{
+	font-size: 18px;
+	font-weight: bold;
+	padding:3px 16px;
+}
+.content{
+	font-size: 12px;
+	padding:3px 16px; 
+}
+.headline{
+	text-align: left;
+}
+.adver_2{
+	float: right;
+	width:35%;
+	font-size: 18px;
+	transform:rotate(-10deg);
+	position:absolute;
+	right:16px;
+	top:10%;	
+}
+.img_wrap{
+	width:100%;
+	
+}
+.ad_info{
+	margin: 5% 2%;
+	width:45%;
+	display: inline-block;
+	text-align: center;
+	vertical-align: middle;
+}
+.ad_info img{
+	width:30%;
+}
+.btn_pad{
+	background-color: #e2e1e7;
+	height:14%;
+	width:100%;
+	position:fixed;
+	bottom:0%;
+	left: 0px;
+	border-top-left-radius:25px;
+	border-top-right-radius:25px;
+	padding: 1px;
+}
+.circleBtn{
+	color:#fff;
+	display: block;
+	font-size: 8px;
+	width:20%;
+	position:fixed;
+	top:86.5%;
+	margin-left: 40%;
+}
+.circleBtn img{
+	z-index:2;
+	text-align: center;
+	vertical-align: middle;
+	width:100%;
+}

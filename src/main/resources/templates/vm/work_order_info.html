@@ -1,0 +1,37 @@
+<div class="container-list" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <td>工单号</td>
+                <td>创建时间</td>
+                <td>工单状态</td>
+                <td>工单类型</td>
+                <td>创建人</td>
+                <td>目前处理人</td>
+                <td>操作</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="r:${data}">
+                <!--可查询详情-->
+                <td><a style="color:blue" href="#"><span  th:text="${r.orderNo}"></span></a></td>
+                <td th:text="${#dates.format(r.createTime, 'yyyy-MM-dd')}"></td>
+                <td th:text="${r.status.desc}"></td>
+                <td th:text="${r.orderType.desc}"></td>
+                <td th:text="${null}"></td>
+                <td th:text="${null}"></td>
+                <td>
+                    <a class="btn btn-xs btn-danger" th:id="${r.orderNo}">催单</a>
+                    <span>|</span>
+                    <a class="btn btn-xs btn-info">客户已解决</a>
+                    <span>|</span>
+                    <a class="btn btn-xs btn-info">已经确认并关闭工单</a>
+                    <span>|</span>
+                    <a class="btn btn-xs btn-info">补充备注</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

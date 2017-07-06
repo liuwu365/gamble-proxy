@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <style type="text/css">
+        .backright-bottom a{ cursor:pointer; }
+        table{ table-layout:fixed; }
+        table tr td{ word-break:break-all; word-wrap:break-word; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .title, .shortTitle, .folderid, .indexImage, .linkerurl{ cursor:help; }
+    </style>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click();
+            showSide("文章列表");
+            _LoadSelectBox.getFolder(); //加载文章类型下拉框(栏目列表)
+            _CommonJS.showLargeImg(); //鼠标悬浮显示大图
+            //增加文章
+            $("#contentAdd").click(function () {
+                window.location = '/news/content/content_add';
+            });
+            //批量删除(到回收站)
+            $("#contentDeleteBath").click(function () {
+                layer.confirm("确定要执行批量删除操作吗？", {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var chk_value_ids = "";
+                    $('input[name="selectContentId"]:checked').each(function () {
+                        if (chk_value_ids == "") {
+                            chk_value_ids = $(this).val();
+                        } else {
+                            chk_value_ids += "," + $(this).val();
+                        }
+                    });
+                    var status = 3; //0.草稿 1.已审核 3.已删除(回收站)
+                    $.get("/news/content/updateStatus/" + status + "/" + chk_value_ids, function (data) {
+                        if (data) {
+                            layer.msg("操作成功！", {time: 1000}, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg("操作失败！", {time: 3000});
+                        }
+                    });
+                }, function () {
+                    layer.close();
+                });
+            });
+            //批量同步App
+            $("#contentSyncApp").click(function () {
+                layer.confirm("确定要执行批量同步App操作吗？", {
+                    btn: ['确定', '取消']
+                }, function () {
+                    var chk_value_ids = "";
+                    $('input[name="selectContentId"]:checked').each(function () {
+                        if (chk_value_ids == "") {
+                            chk_value_ids = $(this).val();
+                        } else {
+                            chk_value_ids += "," + $(this).val();
+                        }
+                    });
+                    var app = 1;
+                    $.get("/news/content/updateSyncApp/" + app + "/" + chk_value_ids, function (data) {
+                        if (data) {
+                            layer.msg("操作成功！", {time: 1000}, function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.msg("操作失败了", {time: 3000});
+                        }
+                    });
+                }, function () {
+                    layer.close();
+                });
+            });
+        });
+        //删除文章
+        function deleteContent(doc) {
+            layer.confirm("确定要删除吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/content/deleteContent/" + doc.id, function (data) {
+                    if (data) {
+                        layer.msg("操作成功！", {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg("操作失败！", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //设置状态:将草稿的设置为已审核  0.草稿 1.已审核 3.已删除(回收站)
+        function setStatus(status, doc, tip) {
+            layer.confirm(tip, {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/content/updateStatus/" + status + "/" + doc.id, function (data) {
+                    if (data) {
+                        layer.msg("操作成功！", {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg("操作失败！", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/content/content_list.html">文章管理</a><span>></span>
+        <em>文章列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/news/content/content_list.html" method="post" class="form-inline" id="searchForm">
+                <div class="form-group">
+                    文章名称： <input type="text" name="filter['title']" class="form-control" placeholder="文章名称搜索" th:value="${page.filter['title']}" />
+                    简短标题： <input type="text" name="filter['shortTitle']" class="form-control" placeholder="简短标题搜索" th:value="${page.filter['shortTitle']}" />
+
+                    <!--所属栏目： <input type="text" name="filter['folderName']" th:value="${page.filter['folderName']}"/>-->
+                    <span>所属栏目：</span>
+                    <select class="folderidBox form-control" name="filter['folderid']">
+                        <option value="">请选择</option>
+                    </select>
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <input type="hidden" name="folderid" th:value="${page.filter['folderid']}" />
+                <div class="pull-right">
+                    <a href="javascript:;" id="contentAdd" class="btn btn-success">新增</a>
+                    <a href="javascript:;" id="contentDeleteBath" class="btn btn-success">批量删除</a>
+                    <a href="javascript:;" id="contentSyncApp" class="btn btn-success">批量同步App</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td width="50px;"><input type="checkbox" name="checkboxes[]" id="select_all" /></td>
+                        <td>文章ID</td>
+                        <td>文章名称</td>
+                        <td>简短标题</td>
+                        <td>所属栏目</td>
+                        <td>推荐级别</td>
+                        <td>状态</td>
+                        <td>首图</td>
+                        <td>文章作者</td>
+                        <td>发布者</td>
+                        <td>修改时间</td>
+                        <td>是否同步到APP</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c:${content.result}">
+                        <td><input type="checkbox" name="selectContentId" id="checkbox2" th:value="${c.id}" /></td>
+                        <td th:text="${c.id}"></td>
+                        <td class="help" th:text="${c.title}" th:title="${c.title}"></td>
+                        <td class="help" th:text="${c.shortTitle}" th:title="${c.shortTitle}"></td>
+                        <td th:text="${c.folderName==null?'未知':c.folderName}" th:title="${c.folderName==null?'未知':c.folderName}"></td>
+                        <td th:text="${c.level}"></td>
+                        <td>
+                            <span th:if="${c.status==1 or c.status==3}" th:text="${c.status==1?'已审核':c.status==3?'已删除(回收站)':'未知'}"></span>
+                            <span th:if="${c.status==0}">
+                            <a href="javascript:void(0);" th:id="${c.id}" onclick="setStatus(1,this,'确定设置为已审核吗？');" th:text="${c.status==0?'草稿':'未知'}"></a>
+                        </span>
+                        </td>
+                        <td>
+                            <img class="prompt" th:if="${c.indexImage!=null and c.indexImage!=''}" th:title="${news_prefix+c.indexImage}" th:src="${news_prefix+c.indexImage}" />
+                        </td>
+                        <td th:text="${c.author}"></td>
+                        <td th:text="${c.sysUserName}"></td>
+                        <td th:text="${c.updatetime!=null?#dates.format(c.updatetime,'yyyy-MM-dd HH:mm:ss'):''}"
+                            th:title="${c.updatetime!=null?#dates.format(c.updatetime,'yyyy-MM-dd HH:mm:ss'):''}">
+                        </td>
+                        <td>
+                            <span th:if="${c.app==1}" th:text="是"></span>
+                            <span th:if="${c.app==0}" th:text="否"></span>
+                        </td>
+                        <td>
+                            <span th:if="${c.status!=3}">
+                                <a href="#" th:id="${c.id}" onclick="setStatus(3,this,'确定要删除吗？');" class="btn btn-xs btn-danger">删除</a>
+                                <span>|</span>
+                            </span>
+                            <!--<a th:id="${c.id}" onclick="deleteContent(this);" class="btn btn-xs btn-danger">彻底删除</a>
+                            <span>|</span>-->
+                            <a th:href="@{/news/content/loadContent.html(id=${c.id})}" class="btn btn-xs btn-info">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click(); //选中咨询管理,使左侧菜单保留住
+            showSide("广告图");
+            _CommonJS.showLargeImg(); //鼠标悬浮显示大图
+            //增加轮播
+            $("#carouselAdd").click(function () {
+                window.location = '/news/carousel/carousel_add.html';
+            });
+        });
+        //]]>
+
+        //删除轮播
+        function deleteCarousel(doc) {
+            layer.confirm("确定要删除吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/carousel/deleteCarousel/" + doc.alt + "/" + doc.id + ".json", function (data) {
+                    if (data.code == 200) {
+                        layer.msg(data.msg, {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg, {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        //设置状态:将草稿的设置为已审核  0.草稿 1.已审核
+        function setStatus(status, doc, tip) {
+            layer.confirm(tip, {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/carousel/updateStatus/" + status + "/" + doc.id, function (data) {
+                    if (data.code == 200) {
+                        layer.msg(data.msg, {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg, {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/carousel/carousel_list.html">广告管理</a><span>></span>
+        <em>轮播图列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/news/carousel/carousel_list.html" method="post" class="form-inline" id="searchForm">
+                <div class="form-group">
+                    类型： <input type="text" name="filter['type']" class="form-control" placeholder="类型搜索" th:value="${page.filter['type']}" />
+                    状态：
+                    <select name="filter['status']" class="form-control">
+                        <option value="">请选择</option>
+                        <option value="0">草稿</option>
+                        <option value="1">已审核</option>
+                    </select>
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" id="carouselAdd" class="newadd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>ID</td>
+                        <td>类型</td>
+                        <td>排序</td>
+                        <td>图片
+                            <a href="javascript:;">
+                                <img src="/images/confirm.png" class="imgTip" data-toggle="tooltip" data-placement="top" title="点击图片，可以显示前台页面展示的原始大小" />
+                            </a>
+                        </td>
+                        <td>跳转链接</td>
+                        <td>状态</td>
+                        <td>创建时间</td>
+                        <td>更新时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="c:${carousel.result}">
+                        <td th:text="${c.id}"></td>
+                        <td th:text="${c.type}"></td>
+                        <td th:text="${c.sort}"></td>
+                        <td>
+                            <a class="prompt" th:if="${c.carouselImg!=null and c.carouselImg!=''}" th:title="${news_prefix+c.carouselImg}" th:href="${news_prefix+c.carouselImg}">
+                                <img th:if="${c.carouselImg!=null and c.carouselImg!=''}" th:src="${news_prefix+c.carouselImg}" />
+                            </a>
+                        </td>
+                        <td>
+                            <a th:href="${c.carouselLinkUrl}" th:text="${c.carouselLinkUrl==null?'':c.carouselLinkUrl}" target="_blank"></a>
+                        </td>
+                        <td>
+                        <span th:if="${c.status==0}">
+                            <a href="javascript:void(0);" th:id="${c.id}" onclick="setStatus(1,this,'确定设置为已审核吗？');" th:text="${c.status==0?'草稿':'未知'}"></a>
+                        </span>
+                            <span th:if="${c.status==1}" th:text="${c.status==1?'已审核':''}"></span>
+                        </td>
+                        <td th:text="${c.createTime!=null?#dates.format(c.createTime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td th:text="${c.updateTime!=null?#dates.format(c.updateTime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td class="set">
+                            <a th:id="${c.id}" th:alt="${c.type}" onclick="deleteCarousel(this);" class="btn btn-xs btn-danger">删除</a>
+                            <span>|</span>
+                            <a th:href="@{/news/carousel/loadCarousel.html(id=${c.id})}" class="btn btn-xs btn-info">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        $(function () {
+            $("#news").click();
+            showSide("栏目列表");
+            $(".folderAdd").click(function () {
+                window.location = '/news/folder/folder_add.html';
+            });
+        });
+        //删除栏目
+        function deleteFolder(doc) {
+            layer.confirm("确定删除此栏目吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.get("/news/folder/deleteFolder/" + doc.id + ".json", function (data) {
+                    if (data.code == 200) {
+                        layer.msg(data.msg, {time: 1000}, function () {
+                            window.location.reload();
+                        });
+                    } else {
+                        layer.msg(data.msg, {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/folder/folder_list.html">栏目管理</a><span>></span>
+        <em>栏目列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/news/folder/folder_list.html" method="post" class="form-inline" id="searchForm">
+                <div class="form-group">
+                    栏目名称： <input type="text" name="filter['name']" class="form-control" placeholder="栏目名称搜索" th:value="${page.filter['name']}" />
+                    标识符： <input type="text" name="filter['ename']" class="form-control" placeholder="标识符搜索" th:value="${page.filter['ename']}" />
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" class="folderAdd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>栏目ID</td>
+                        <td>父级栏目</td>
+                        <td>栏目名称</td>
+                        <td>标识符</td>
+                        <td>排序</td>
+                        <td>栏目描述</td>
+                        <td>创建时间</td>
+                        <td>创建时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="f:${folder.result}">
+                        <td th:text="${f.folderid}"></td>
+                        <td th:text="${f.pidName}"></td>
+                        <td th:text="${f.name}"></td>
+                        <td th:text="${f.ename}"></td>
+                        <td th:text="${f.sort}"></td>
+                        <td th:text="${f.description}"></td>
+                        <td th:text="${f.createtime!=null?#dates.format(f.createtime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td th:text="${f.updatetime!=null?#dates.format(f.updatetime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                        <td>
+                            <a th:id="${f.folderid}" onclick="deleteFolder(this);" class="btn btn-xs btn-danger">删除</a>
+                            <span>|</span>
+                            <a th:href="@{/news/folder/loadFolder.html(folderid=${f.folderid})}" class="btn btn-xs btn-info">修改</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

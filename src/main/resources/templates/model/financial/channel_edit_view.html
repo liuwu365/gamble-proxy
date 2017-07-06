@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head lang="en">
+    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>lottery</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <style type="text/css">
+        .stripe .xg{margin-left: 5px;padding: 0 12px;background: url(/img/bj.png) no-repeat center;}
+        .stripe .updatEexperienceDiv{z-index: 99;border: 1px solid #0044cc;}
+        .layui-layer-demo .layui-layer-title{border:none; background-color:#333; color:#fff;}
+        .alertDiv{ height:100%;display: block;font-size:14px;margin: 2% 14%;}
+        .alertDiv input{height:36px;margin-bottom: 0px;}
+        .operation label{display: inline;margin-left: 20px;}
+    </style>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#finance").click();
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: 'help-inline',
+                focusInvalid: false,
+                ignore: "",
+                rules: {name: {required: true}},
+                messages: {name: {required: "请输入栏目名称"}},
+                submitHandler: function (form) {
+                    $(".ename").attr("disabled",false);
+                    $(form).ajaxSubmit(function (res) {
+                        if (res.code == 200) {
+                            layer.msg("操作成功！", {time: 1000}, function () {
+                                window.location.href = "/financial/pay/channel/list.html";
+                            });
+                        } else {
+                            layer.msg("操作失败！", {time: 3000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+        });
+        //]]>
+        $(function () {
+
+            var val = $("#payLimitType").val();
+            var parent = $(":radio[name='payLimitType'][value='" + val + "']").prop("checked", "checked").parent();
+            parent.find('[name=payRemind]').val($("#payRemind").val());
+            parent.find('[name=payRemind2]').val($("#payRemind").val());
+            parent.find('[name=payLimitNum3]').val($("#payLimitNum").val());
+            parent.find('[name=payLimitNum]').val($("#payLimitNum").val());
+            parent.find('[name=payLimitNum2]').val($("#payLimitNum").val());
+
+            $(document).on('change', "input[type='file']", function () {
+                //var prefix = $("[name='img_url_prefix']").val();
+                _CommonJS.upload(this.id, '/uploads.json');
+            });
+        });
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">财务管理</a><span>></span>
+        <a href="#">支付渠道管理</a><span>></span>
+        <a href="#">修改支付渠道</a><span>></span>
+    </div>
+    <div class="main">
+        <form action="/financial/pay/channel/editSave.json" class="form-horizontal" method="post" id="form">
+            <input type="hidden" name="id" th:value="${payChannels.id}"/>
+            <input type="hidden" id="news_prefix" name="img_url_prefix" th:value="${img_url_prefix}" />
+            <input type="hidden" th:value="${payChannels.payLimitType}" id="payLimitType"/>
+            <input type="hidden" th:value="${payChannels.payRemind}" id="payRemind"/>
+            <input type="hidden" th:value="${payChannels.payLimitNum}" id="payLimitNum"/>
+            <div class="row">
+                <label class="col-xs-1 control-label">渠道名称：</label>
+                <div class="col-xs-2">
+                    <input class="form-control" name="payChannelsName" th:value="${payChannels.payChannelsName}"/>
+                </div>
+
+                <label class="col-xs-1 control-label">渠道类型：</label>
+                <div class="col-xs-2">
+                    <select class="form-control" name="payType">
+                        <option value="">请选择类型</option>
+                        <option th:each="g:${payType}" th:value="${g.code}" th:text="${g.desc}" th:selected="${payChannels.payType==g.code}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">转账账户：</label>
+                <div class="col-xs-2">
+                    <input class="form-control" name="transferAccount" th:value="${payChannels.transferAccount}"/>
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col-xs-1 control-label">二维码：</label>
+                <div class="col-xs-2">
+                    <i><img id="index_pic" th:src="${img_url_prefix  + payChannels.qrCode}" /></i>
+                    <input type="file" name="upload_org_code" id="upload_org_code" value="" />
+                    <input type="hidden" id="index_image" class="form-control" name="qrCode" th:value="${payChannels.qrCode}" />
+                </div>
+            </div>
+
+            <div class="row">
+                <label class="col-xs-1 control-label">渠道限制：</label>
+                <div class="col-xs-2 channel-control">
+                    <div>
+                        <input name="payLimitType"  style="width:15px" type="radio" value="1">次数限制</input>
+                        <div>
+                            <input type="text" class="form-control" name="payLimitNum" placeholder="输入限制次数"/>
+                            <input type="text" class="form-control" name="payRemind" placeholder="输入提醒"/>
+                        </div>
+                    </div>
+                    <div>
+                        <input name="payLimitType"  style="width:15px" type="radio" value="2">总金额限制</input>
+                        <div>
+                            <input type="text" class="form-control" name="payLimitNum2" placeholder="输入限制次数"/>
+                            <input type="text" class="form-control" name="payRemind2" placeholder="输入提醒"/>
+                        </div>
+                    </div>
+                    <div>
+                        <input name="payLimitType"  style="width:15px" type="radio" value="3">单笔金额限制</input>
+                        <div>
+                            <input type="text" class="form-control" name="payLimitNum3" placeholder="输入限制次数"/>
+                        </div>
+                    </div>
+                </div>
+                <style>
+                    .channel-control input+div{
+                        display: none;
+                    }
+                    .channel-control input:checked+div{
+                        display: block;
+                    }
+                </style>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">更新</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

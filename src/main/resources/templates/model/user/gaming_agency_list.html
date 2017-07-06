@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#vip").click(); //选中会员管理,使左侧菜单保留住
+        });
+        //]]>
+
+        //获取选中的复选框
+        function getChkIds(){
+            var chk_value_ids ="";
+            $('input[name="selectContentId"]:checked').each(function(){
+                if(chk_value_ids==""){
+                    chk_value_ids = $(this).val();
+                }else{
+                    chk_value_ids += ","+$(this).val();
+                }
+            });
+            return chk_value_ids;
+        }
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">会员管理</a><span>></span>
+        <a href="/lottery/user/agencyList.html">代理列表</a><span>></span>
+        <em>代理详细信息</em>
+    </div>
+
+    <div class="main wrapper">
+        <div class="wrap">
+            <form class="form-inline" role="form" >
+                <div class="wrap" >
+                    <div class="form-group">
+                        <label style="width:100px;text-align:right;">帐号：</label>
+                        <input style="width:200px;" type="text"  class="form-control" placeholder="帐号搜索" />&nbsp;&nbsp;
+                        <label style="width:100px;text-align:right;">姓名：</label>
+                        <input style="width:200px;" type="text"  class="form-control" placeholder="姓名搜索" />&nbsp;&nbsp;
+                        <label style="width:100px;text-align:right;">邀请码：</label>
+                        <input style="width:200px;" type="text"  class="form-control" placeholder="邀请人搜索"  />
+                    </div>
+                </div>
+                <div class="wrap">
+                    <div class="form-group">
+                        <label style="width:100px;text-align:right;">用户状态：</label>
+                        <select style="width:200px;" class="form-control" name="filter['status']">
+                            <option value="">请选择用户状态</option>
+                            <option th:each="s:${userList}" th:value="${s.type}" th:text="${s.desc}"
+                                    th:selected="${pageList.filter['status']==s.type}" readonly="readonly">
+                            </option>
+                        </select>
+                        <label style="width:100px;text-align:right;">充值状态：</label>
+                        <select style="width:200px;" class="form-control" name="filter['status']">
+                            <option value="">请选择充值状态</option>
+                            <option th:each="p:${payType}" th:value="${p.type}" th:text="${p.desc}"
+                                    th:selected="${pageList.filter['status']==p.type}" readonly="readonly">
+                            </option>
+                        </select>
+                        <label style="width:100px;text-align:right;">盈亏状态：</label>
+                        <select style="width:200px;" class="form-control" name="filter['status']">
+                            <option value="">请选择盈亏状态</option>
+                            <option th:each="ps:${profitStatuses}" th:value="${ps.code}" th:text="${ps.desc}"
+                                    th:selected="${pageList.filter['status']==ps.code}" readonly="readonly">
+                            </option>
+                        </select>
+                        <button onclick="resetPage();" class="btn btn-default">搜索</button>
+                        <input type="reset" name="button" id="button" value="重置" class="newadd btn btn-success"/>
+
+                    </div>
+                </div>
+        <div class="wrap">
+            <div class="form-group">
+                <div class="pull-right">
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">新建用户账号</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">冻结代理</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">标记问题代理</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">重置密码</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">重置提现密码</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">绑定银行卡</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">解绑银行卡</a>&nbsp;&nbsp;&nbsp;
+                    <a href="#" class="newadd btn btn-success" style="height: 38px;">红利/佣金调整</a>
+        </div>
+            </div>
+        </div>
+</form>
+</div>
+<div class="container-list">
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                    <td ><input type="checkbox" name="checkboxes[]" id="select_all"/></td>
+                    <td>ID</td>
+                    <td>账号</td>
+                    <td>真实姓名</td>
+                    <td>邀请码</td>
+                    <td>名下用户</td>
+                    <td>充值用户</td>
+                    <td>存款总计</td>
+                    <td>盈亏状态</td>
+                    <td>代理红利</td>
+                    <td>佣金比例</td>
+                    <td>代理状态</td>
+                    <td>操作</td>
+                </tr>
+            </thead>
+            <tbody>
+                <!--<tr th:each="u:${user.result}">
+                    <td><input type="checkbox" name="selectContentId" id="checkbox2" th:value="${u.id}" /></td>
+                    <td th:text="${u.id}"></td>
+                    <td th:text="${u.userName}" th:title="${u.userName}"></td>
+                    <td th:text="${u.mobile}" th:title="${u.mobile}"></td>
+                    <td th:text="${u.email}" th:title="${u.email}"></td>
+                    <td th:text="'LV'+${u.level==null?0:u.level}"></td>
+                    <td th:text="${u.experience==null? 0:u.experience}" th:title="${u.email}"></td>
+                    <td th:text="${u.locked==true}"></td>
+                    <td th:text="${u.frozenTime!=null?#dates.format(u.frozenTime,'yyyy-MM-dd HH:mm:ss'):'-'}"></td>
+                    <td   th:text=""> </td>
+                    <td  th:text=""> </td>
+                    <td th:text="${u.createTime!=null?#dates.format(u.createTime,'yyyy-MM-dd HH:mm:ss'):''}"></td>
+                    <td class="set">
+                        <a class="del" th:id="${u.id}" th:if="${u.frozenStatus==1}" onclick="unfreezeBathFn(1,this.id);">盈亏月报</a>
+                        <a class="del" th:id="${u.id}" th:if="${u.frozenStatus==1}" onclick="unfreezeBathFn(1,this.id);">详细资料</a>
+                    </td>
+                </tr>-->
+                </tbody>
+            </table>
+        </div>
+                <div class="text-center">
+                    <ul id="pageLimit"></ul>
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+</html>

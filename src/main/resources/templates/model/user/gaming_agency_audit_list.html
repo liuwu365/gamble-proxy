@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#vip").click(); //选中会员管理,使左侧菜单保留住
+        });
+        //]]>
+
+     /*   //获取选中的复选框
+        function getChkIds(){
+            var chk_value_ids ="";
+            $('input[name="selectContentId"]:text').each(function(){
+                if(chk_value_ids==""){
+                    chk_value_ids = $(this).val();
+                }else{
+                    chk_value_ids += ","+$(this).val();
+                }
+            });
+            return chk_value_ids;
+        }*/
+        function updateUserStatsByAGENCY(locked) {
+            var id=$(name="selectContentId").val();
+            var confirmStr = "";
+            if(locked==true) {
+                confirmStr = "确定批准代理用户吗"
+            }
+            if(window.confirm(confirmStr)) {
+                $.ajax({
+                    url: '/lottery/user/updateUserStatsByAGENCY.html',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {id:id,locked:locked},
+                    success: function(data){
+                        if(data.code==200){
+                            layer.msg(data.msg, {time: 1000,end:function(){
+
+                                layer.msg("批准代理成功！", {time: 6000});
+                                window.location.reload();
+                            }});
+                        }else{
+                            layer.msg(data.msg, {time: 6000});
+                        }
+                    },
+                    error: function(e){
+                        layer.msg('系统错误，请您稍后重试！');
+                    }
+                });
+            }
+        }
+
+        function updateJB(doc){
+            var obj = $(doc);
+            var realName=obj.attr("realName");
+            var bWeight = obj.attr("bWeight");
+            layer.open({
+                type: 1,
+                title:'驳回【'+realName+'】的申请',
+                skin: 'layui-layer-demo',
+                shift: 2,
+                shadeClose: false,
+                area: ['520px', ''],
+                content: '<div class="alertDiv">驳回理由：<input type="text" id="bWeight" name="bWeight" value="'+bWeight+'"/></div>',
+                btn:['保存','取消'],
+                yes:function(){
+                    $.ajax({
+                        url: '',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {id: doc.id, bWeight: $("#bWeight").val()},
+                        success: function(data){
+                            if(data.code==200){
+                                layer.msg(data.message, {time: 1000,end:function(){
+                                    window.location.reload();
+                                }});
+                            }else{
+                                layer.msg(data.message, {time: 6000});
+                            }
+                        },
+                        error: function(e){
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel:function(){}
+            });
+        }
+
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">会员管理</a><span>></span>
+        <a href="#">代理审核</a><span>></span>
+        <em>代理审核列表</em>
+    </div>
+
+    <div class="main wrapper">
+        <div class="wrap">
+            <form class="form-inline" role="form" action="/lottery/user/auditList.html">
+                <div class="wrap" >
+                    <div class="form-group">
+                        </div>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                    <td>ID</td>
+                    <td>账号</td>
+                    <td>真实姓名</td>
+                    <td>公司名称</td>
+                    <td>邮箱</td>
+                    <td>手机</td>
+                    <td>详细申请资料</td>
+                    <td>操作</td>
+                </tr>
+                    </thead>
+                    <tbody>
+                <tr th:each="u:${page.result}">
+                    <td th:text="${u.id}" ></td>
+                    <td th:text="${u.userName}"  th:title="${u.userName}"></td>
+                    <td th:text="${u.realName}"  th:title="${u.realName}"></td>
+                    <td th:text="${u.companyName}" th:title="${u.companyName}"></td>
+                    <td th:text="${u.email}" th:title="${u.email}"></td>
+                    <td th:text="${u.contactNum}" th:title="${u.contactNum}"></td>
+                    <td class="set">
+                        <a class="del"  href="/lottery/user/operationList.html">操作记录查询</a>
+                    </td>
+                    <td class="set">
+                            <a id="lockedUserBatch"
+                        th:id="${u.id}" onclick="updateUserStatsByAGENCY(true);">批准代理</a>
+                        ,
+                        <a  href="javascript:;"
+                            onclick="" >驳回申请
+                        </a>
+                    </td>
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+           <!-- <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>-->
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("基础配置");
+            $(".save").click(function(){
+                $('#form').ajaxSubmit(function (res) {
+                    if (res) {
+                        layer.confirm("修改成功！", {
+                            btn: ['确定', '取消']
+                        }, function () {
+                            window.location.href = "/configManage/enumData/sysEnumDataList.json";
+                        });
+                    } else {
+                        layer.msg("修改失败！", {time: 3000});
+                    }
+                });
+            });
+        });
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">配置管理</a><span>></span>
+        <a href="/configManage/enumData/sysEnumDataList.json">基础配置管理</a><span>></span>
+        <em>修改配置</em>
+    </div>
+    <div class="main">
+        <form action="/configManage/enumData/edit.json" method="post" class="form-horizontal" id="form">
+            <input name="id" type="hidden" th:value="${sysEnumData.id}"/>
+            <div class="form-group">
+                <label class="col-sm-1 control-label">枚举类型：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="dataType" th:value="${sysEnumData.dataType}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">键：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="enumKey" th:value="${sysEnumData.enumKey}"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">值：</label>
+                <div class="col-sm-3">
+                    <textarea  type="text" class="form-control" name="enumValue" th:text="${sysEnumData.enumValue}" style="min-height: 200px"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">描述：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="description"  th:value="${sysEnumData.description}"/>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <input type="button" class="save btn btn-danger"  value="保存" />
+                <input type="button" name="cancel" class="btn btn-warning" value="取消" onclick="cancleGoBack();" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

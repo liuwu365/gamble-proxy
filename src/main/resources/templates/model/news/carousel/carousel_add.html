@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#news").click(); //选中咨询管理,使左侧菜单保留住
+            showSide("广告图");
+            //文件上传
+            $(document).on('change', "input[type='file']", function () {
+                _CommonJS.upload(this.id, '/uploads');
+            });
+
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: '_error',
+                focusInvalid: false,
+                ignore: "",
+                rules: {
+                    type: {required: true},
+                    carouselImg: {required: true}
+                },
+                messages: {
+                    type: {required: "必填"},
+                    carouselImg: {required: "必填"}
+                },
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit(function (res) {
+                        if (res.code == 200) {
+                            layer.msg(res.msg, {time: 1000}, function () {
+                                window.location.href = "/news/carousel/carousel_list.html";
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 3000});
+                        }
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                }
+            });
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">资讯管理</a><span>></span>
+        <a href="/news/carousel/carousel_list">广告管理</a><span>></span>
+        <em>新增轮播图</em>
+    </div>
+    <div class="main">
+        <form action="/news/carousel/carousel_add" method="POST" class="layui-form form-horizontal" id="form">
+            <input type="hidden" id="news_prefix" name="news_prefix" th:value="${news_prefix}" />
+            <div class="row">
+                <label class="col-xs-1 control-label">类型：</label>
+                <div class="col-xs-2">
+                    <input class="carousel_type form-control" placeholder="请输入类型(长度20个字符)" maxlength="20" name="type" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">轮播图片：</label>
+                <div class="col-xs-2">
+                    <i><img id="index_pic" src="" /></i>
+                    <input type="file" name="upload_org_code" id="upload_org_code" value="" />
+                    <input type="hidden" id="index_image" class="form-control" name="carouselImg" value="" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">跳转链接：</label>
+                <div class="col-xs-2">
+                    <input type="text" class="form-control" name="carouselLinkUrl" placeholder="请输入跳转链接地址" />
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">跳转类型：</label>
+                <div class="col-xs-2">
+                    <select name="skiptype" id="skip">
+                        <option value="0">---请选择---</option>
+                        <option value="1">资讯内页(移动端专用)</option>
+                        <option value="2">3G页面(移动端专用)</option>
+                        <option value="3">竞猜页面(移动端专用)</option>
+                        <option value="4">赛事介绍页(移动端专用)</option>
+                        <option value="5">赛事创建页(移动端专用)</option>
+                        <option value="6">直播页面(移动端专用)</option>
+                        <option value="7">充值页面(移动端专用)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">是否需要图片版本号(移动端专用)：</label>
+                <div class="col-xs-2">
+                    <input type="checkbox" name="needVersion" value="1" title="是"/>
+                </div>
+            </div>
+            <div class="row">
+                <label class="col-xs-1 control-label">排序：</label>
+                <div class="col-xs-2">
+                    <input type="number" class="form-control" min="0" max="99" placeholder="请输入排序值(0~99)" name="sort"
+                           onkeyup="this.value=this.value.replace(/\D/g,'')"
+                           onafterpaste="this.value=this.value.replace(/\D/g,'')" />
+                </div>
+            </div>
+            <div class="row layui-form-item">
+                <label class="col-xs-1 control-label ">发布状态：</label>
+                <div class="col-xs-5">
+                    <input type="radio" name="status" checked="checked" value="0" title="保存为草稿" />
+                    <input type="radio" name="status" value="1" title="保存为已审核" />
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <button class="btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

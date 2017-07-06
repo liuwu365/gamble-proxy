@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#vip").click(); //选中会员管理,使左侧菜单保留住
+        });
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">会员管理</a><span>></span>
+        <a href="#">用户中心</a><span>></span>
+        <a href="#">用户列表</a><span>></span>
+        <em>操作记录列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form class="form-inline" role="form" action="/lottery/user/operationList.html">
+                <div class="wrap" >
+                        <input class="form-control" type="text" name=""  placeholder="请选择时间" onclick="laydate({elem:(this)})" />&nbsp;至&nbsp;
+                        <input class="form-control" type="text" name="" placeholder="请选择时间" onclick="laydate({elem:(this)})" />
+                        <button onclick="resetPage();" class="btn btn-default">搜索</button>
+                    <input class="_btn" type="button" name="returnList" value="返回列表" onclick="javascript:location.href='/lottery/user/list.html'"/>
+                </div>
+                <!--<input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />-->
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td >时间</td>
+                        <td>操作人</td>
+                        <td>对应工单/聊天记录</td>
+                        <td>操作内容</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u:${page.result}">
+                        <td th:text="${u.createTime!=null?#dates.format(u.createTime,'yyyy-MM-dd HH:mm'):''}"></td>
+                        <td th:text="${u.operUserId}" th:value="${u.operUserId}"></td>
+                        <td th:text="${u.orderNo}" th:value="${u.orderNo}"></td>
+                        <td th:text="${u.content}" th:title="${u.content}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--<div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>-->
+        </div>
+    </div>
+</div>
+</body>
+</html>

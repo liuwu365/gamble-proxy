@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#vip").click(); //选中会员管理,使左侧菜单保留住
+        });
+        //]]>
+        function newadd(){
+            $("#addBath").click(function(){
+                window.location='/lottery/user/add.html';
+            });
+        };
+        function lockedUserBatchByFROZEN(locked) {;
+            var ids = _CommonJS.getChks('selectContentId');
+            if (ids == '' || ids == null) {
+                layer.msg('请先勾选后再操作',{time:1000});
+                return ;
+            }
+            var confirmStr = "";
+            if(locked) {
+                confirmStr = "确定冻结选定的用户吗"
+            }
+            if(window.confirm(confirmStr)) {
+                $.ajax({
+                    url: '/lottery/user/updateUserStatsByFROZEN.html',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {id: ids,locked:locked},
+                    success: function(data){
+                        if(data.code==200){
+                            layer.msg(data.msg, {time: 1000,end:function(){
+                                layer.msg("冻结成功！", {time: 6000});
+                                window.location.reload();
+                            }});
+                        }else{
+                            layer.msg(data.msg, {time: 6000});
+                        }
+                    },
+                    error: function(e){
+                        layer.msg('系统错误，请您稍后重试！');
+                    }
+                });
+            }
+        }
+
+        function lockedUserBatchBySUSPECTIVE(locked) {
+            var ids = _CommonJS.getChks('selectContentId');
+            if (ids == '' || ids == null) {
+                layer.msg('请先勾选后再操作',{time:1000});
+                return ;
+            }
+            var confirmStr = "";
+            if(locked==true) {
+                confirmStr = "确定标示选定的用户为问题用户吗"
+            }
+            if(window.confirm(confirmStr)) {
+                $.ajax({
+                    url: '/lottery/user/updateUserStatsBySUSPECTIVE.html',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {id: ids,locked:locked},
+                    success: function(data){
+                        if(data.code==200){
+                            layer.msg(data.msg, {time: 1000,end:function(){
+                                layer.msg("标记成功！", {time: 6000});
+                                window.location.reload();
+                            }});
+                        }else{
+                            layer.msg(data.msg, {time: 6000});
+                        }
+                    },
+                    error: function(e){
+                        layer.msg('系统错误，请您稍后重试！');
+                    }
+                });
+            }
+        }
+
+        function lockedUserBatchBySUSPECTIVE(locked) {
+            var ids =  _CommonJS.getChks('selectContentId');
+            if (ids == '' || ids == null) {
+                layer.msg('请先勾选后再操作',{time:1000});
+                return ;
+            }
+            var confirmStr = "";
+            if(locked==true) {
+                confirmStr = "确定要解绑选定的用户的银行卡吗"
+            }
+            if(window.confirm(confirmStr)) {
+                $.ajax({
+                    url: '/lottery/user/deleteUserManage.html',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {id: ids,locked:locked},
+                    success: function(data){
+                            layer.msg(data.msg, {time: 1000,end:function(){
+                                layer.msg("解绑成功！", {time: 6000});
+                                window.location.reload();
+                            }})
+                    },
+                    error: function(e) {
+                        layer.msg('系统错误，请您稍后重试！');
+                    }
+                    }, function () {
+                    layer.close();
+                });
+            }
+        }
+
+        function lockedUserBatchBySUSPECTIVE(locked) {
+            var ids =  _CommonJS.getChks('selectContentId');
+            if (ids == '' || ids == null) {
+                layer.msg('请先勾选后再操作', {time: 1000});
+                return;
+            }
+            var confirmStr = "";
+            if (locked == true) {
+                confirmStr = "确定要绑定选定的用户的银行卡吗"
+            }
+            if (window.confirm(confirmStr)) {
+                $.ajax({
+                    url: '/lottery/user/bangDingUserManage.html',
+                    method: 'post',
+                    dataType: 'json',
+                    data: {id: ids, locked: locked},
+                    success: function (data) {
+                        layer.msg(data.msg, {
+                            time: 1000, end: function () {
+                                layer.msg("绑定成功！", {time: 6000});
+                                window.location.reload();
+                            }
+                        })
+                    },
+                    error: function (e) {
+                        layer.msg('系统错误，请您稍后重试！');
+                    }
+                }, function () {
+                    layer.close();
+                });
+            }
+        }
+
+
+
+
+        /*function updateDiamond(doc){
+            var obj = $(doc);
+            var username = obj.attr("username");
+            var diamond = obj.attr("diamond");
+            layer.open({
+                type: 1,
+                title:'正在为'+username+'绑定银行卡',
+                skin: 'layui-layer-demo', //样式类名
+                //closeBtn: 0, //不显示关闭按钮
+                shift: 2,
+                shadeClose: false, //是否开启遮罩关闭
+                area: ['420px', ''], //宽高
+                content: '<div class="alertDiv"><table><td>姓名：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td>' +
+                '<td>银行：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td>' +
+                '<td>卡号：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td>' +
+                '<td>开户省号：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td>' +
+                '<td>开户行：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td>' +
+                '<td>工单号：<input type="text" id="diamond" name="diamond" value="'+diamond+'"/></td></table></div>',
+                btn:['保存','取消'],
+                yes:function(){
+                    var flag = _CommonJS.isDouble($("#diamond").val());
+                    $.ajax({
+                        url: '/user/center/updateDiamond.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {userId: doc.id, diamond: $("#diamond").val()},
+                        success: function(data){
+                            if(data.code==200){
+                                layer.msg(data.message, {time: 1000,end:function(){
+                                    window.location.reload();
+                                }});
+                            }else{
+                                layer.msg(data.message, {time: 6000});
+                            }
+                        },
+                        error: function(e){
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel:function(){}
+            });
+        }*/
+
+
+        function updateDiamond(doc){
+            var obj = $(doc);
+            var username = obj.attr("username");
+            var diamond = obj.attr("diamond");
+            layer.open({
+                type: 1,
+                title:'正在为'+username+'绑定银行卡',
+                skin: 'layui-layer-demo', //样式类名
+                //closeBtn: 0, //不显示关闭按钮
+                shift: 2,
+                shadeClose: false, //是否开启遮罩关闭
+                area: ['420px', ''], //宽高
+                content: '',
+                yes:function(){
+                    var flag = _CommonJS.isDouble($("#diamond").val());
+                    $.ajax({
+                        url: '/user/center/bangDingUserManage.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {userId: doc.id, diamond: $("#diamond").val()},
+                        success: function(data){
+                            if(data.code==200){
+                                layer.msg(data.message, {time: 1000,end:function(){
+                                    window.location.reload();
+                                }});
+                            }else{
+                                layer.msg(data.message, {time: 6000});
+                            }
+                        },
+                        error: function(e){
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel:function(){}
+            });
+        }
+
+       /* function showLayer() {
+            var divBank = $('#divBank');
+            var ct = divBank.html();
+            layer.open({
+                title: '绑定银行卡',
+                type: 1,
+                skin: 'layui-layer-lan', //加上边框
+                area: ['420px', '450px'], //宽高
+                anim: 2,
+                closeBtn: 1,
+                shadeClose: true, //开启遮罩关闭
+                content: ct
+            });
+        }*/
+
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">会员管理</a><span>></span>
+        <a href="#">用户中心</a><span>></span>
+        <em>用户列表</em>
+        </div>
+    <div class="main wrapper">
+        <div class="wrap">
+                <form class="form-inline" role="form" action="/lottery/user/list.html">
+                        <div class="wrap" >
+                            <div class="form-group">
+                                 <label style="width:100px;text-align:right;">帐号：</label>
+                                 <input style="width:200px;" type="text"  class="form-control" placeholder="帐号搜索" />&nbsp;&nbsp;
+                                 <label style="width:100px;text-align:right;">姓名：</label>
+                                 <input style="width:200px;" type="text"  class="form-control" placeholder="姓名搜索" />&nbsp;&nbsp;
+                                 <label style="width:100px;text-align:right;">邀请人：</label>
+                                 <input style="width:200px;" type="text"  class="form-control" placeholder="邀请人搜索"  />
+                            </div>
+                        </div>
+                        <div class="wrap">
+                            <div class="form-group">
+                                    <label style="width:100px;text-align:right;">用户状态：</label>
+                                        <select style="width:200px;" class="form-control" name="filter['status']">
+                                        <option value="">请选择用户状态</option>
+                                        <option th:each="s:${userList}" th:value="${s.type}" th:text="${s.desc}"
+                                                th:selected="${pageList.filter['status']==s.type}" readonly="readonly">
+                                        </option>
+                                    </select>
+
+                                <label style="width:100px;text-align:right;">充值状态：</label>
+                                    <select style="width:200px;" class="form-control" name="filter['status']">
+                                        <option value="">请选择充值状态</option>
+                                        <option th:each="p:${payType}" th:value="${p.type}" th:text="${p.desc}"
+                                                th:selected="${pageList.filter['status']==p.type}" readonly="readonly">
+                                        </option>
+                                    </select>
+                                <label style="width:100px;text-align:right;">盈亏状态：</label>
+                                <select style="width:200px;" class="form-control" name="filter['status']">
+                                    <option value="">请选择盈亏状态</option>
+                                    <option th:each="ps:${profitStatuses}" th:value="${ps.code}" th:text="${ps.desc}"
+                                            th:selected="${pageList.filter['status']==ps.code}" readonly="readonly">请选择用户状态
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="wrap">
+                            <div class="form-group">
+                                <label style="width:100px;text-align:right;">注册时间：</label>
+                                <input class="form-control" type="text" name=""  placeholder="请选择时间" onclick="laydate({elem:(this),istime: true, format: 'YYYY-MM-DD hh'})" />&nbsp;至&nbsp;
+                                <input class="form-control" type="text" name="" placeholder="请选择时间" onclick="laydate({elem:(this),istime: true, format: 'YYYY-MM-DD hh'})" />
+                                <select style="width:200px;" class="form-control" name="filter['status']">
+                                    <option value="">请选择注册渠道</option>
+                                    <option th:each="s:${payChannels}" th:value="${s.code}" th:text="${s.desc}"
+                                            th:selected="${pageList.filter['status']==s.code}" readonly="readonly">请选择用户状态
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="wrap">
+                            <div class="form-group">
+                                <label style="width:100px;text-align:right;">最后下注时间：</label>
+                                <input class="form-control" type="text" name=""  placeholder="请选择时间" onclick="laydate({elem:(this),istime: true, format: 'YYYY-MM-DD hh'})" />&nbsp;至&nbsp;
+                                <input class="form-control" type="text" name=""  placeholder="请选择时间" onclick="laydate({elem:(this),istime: true, format: 'YYYY-MM-DD hh'})" />
+                                <select style="width:200px;" class="form-control" name="filter['status']">
+                                    <option value="">请选择最后登录渠道</option>
+                                    <option th:each="s:${registerStatuses}" th:value="${s.code}" th:text="${s.desc}"
+                                            th:selected="${pageList.filter['status']==s.code}" readonly="readonly">请选择用户状态
+                                    </option>
+                                </select>
+                                <button onclick="resetPage();" class="btn btn-default">搜索</button>
+                                <input type="reset" name="button" id="button" value="重置" class="newadd btn btn-success"/>
+                            </div>
+                        </div>
+                    <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                    <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                </form>
+                    <div class="wrap">
+                        <div class="form-group">
+                                <button class="newadd btn btn-success" style="height: 38px;" id="addBath" onclick="newadd();">新建用户账号</button>
+                                <button class="newadd btn btn-success" style="height: 38px;" id="lockedUser" onclick="lockedUserBatchByFROZEN(true);">冻结用户</button>
+                                <button class="newadd btn btn-success" style="height: 38px;" id="lockedUserBatch" onclick="lockedUserBatchBySUSPECTIVE(true);">标记问题用户</button>
+                                <a href="#" class="newadd btn btn-success" style="height: 38px;">重置密码</a>&nbsp;&nbsp;
+                                <a href="#" class="newadd btn btn-success" style="height: 38px;">重置提现密码</a>&nbsp;&nbsp;
+                                <button class="newadd btn btn-success" style="height: 38px;" id="locked" onclick="showLayer();">绑定银行卡</button>
+                                <button class="newadd btn btn-success" style="height: 38px;" id="locked" onclick="lockedUserBatchBySUSPECTIVE(true)">解绑银行卡</button>
+                                <a href="#" class="newadd btn btn-success" style="height: 38px;">余额调整</a>
+                            </div>
+                        </div>
+
+        </div>
+
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <td ><input type="checkbox" name="checkboxes[]" id="select_all"/></td>
+                            <td >账号</td>
+                            <td >真实姓名</td>
+                            <td>邀请人</td>
+                            <td>注册时间</td>
+                            <td>最后登录</td>
+                            <td>银行卡绑定信息</td>
+                            <td>可用余额</td>
+                            <td>用户状态</td>
+                            <td>操作</td>
+                            </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u:${pageList.result}">
+                    <td><input type="checkbox" name="selectContentId" th:value="${u.id}"/></td>
+                    <td  th:if="${u.registerType==1}">
+                        <span th:text="${u.mobile}"></span>
+                    </td>
+                    <td  th:if="${u.registerType==2}">
+                        <span th:text="${u.email}"></span>
+                    </td>
+                    <td class="processTd"  th:title="${u.registerType}">
+                    </td>
+                    <td th:text="${u.realName}" th:title="${u.realName}"></td>
+                    <td th:text="${u.proxyUid}" th:title="${u.proxyUid}"></td>
+                    <td th:text="${u.createTime!=null?#dates.format(u.createTime,'yyyy-MM-dd HH:mm'):''}"></td>
+                    <td th:text="${u.endTime!=null?#dates.format(u.endTime,'yyyy-MM-dd HH:mm'):''}"></td>
+                    <td class="a">
+                        <div>
+                            <span th:text="${u.bank}"></span>
+                            <span th:text="${u.bankNumber}"></span>
+                        </div>
+                    </td>
+                    <td th:text="${u.money}" th:value="${u.money}"></td>
+                    <!--<td th:text="${u.status}" th:title="${u.status}"></td>-->
+                    <td class="playreco" th:if="${u.status == 0}">未激活</td>
+                    <td class="playreco" th:if="${u.status == 1}">已激活</td>
+                    <td class="playreco" th:if="${u.status == 2}">已冻结</td>
+                    <td class="playreco" th:if="${u.status == 3}">问题用户</td>
+                    <td class="playreco" th:if="${u.status == 4}">代理已申请,未审批</td>
+                    <td class="playreco" th:if="${u.status == 5}">已锁定</td>
+                    <td class="set">
+                        <a class="del"  href="/lottery/user/operationList.html">操作记录查询</a>
+                    </td>
+                </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+</div>
+</div>
+
+<!--<div id="divBank" style="display:none">
+    <form class='wrapper wrap form-horizontal'>
+        <div class='form-group'>
+            <label for='inputEmail3' class='col-sm-offset2 col-sm-3 control-label'>Email</label>
+            <div class='col-sm-8'>
+                <input type='email' class='form-control' id='inputEmail3' placeholder='Email' />
+            </div>
+        </div>
+        <div class='form-group'>
+            <label class='col-sm-offset2 col-sm-3 control-label'></label>
+            <div class='col-sm-offset-2 col-sm-8'>
+                <div class='checkbox'>
+                    <label><input type='checkbox' /> Remember me</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class='col-sm-offset2 col-sm-3 control-label'></label>
+            <div class="col-sm-8 radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked="checked" />
+                    Option one is this
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class='col-sm-offset2 col-sm-3 control-label'></label>
+            <div class="col-sm-8 radio">
+                <label>
+                    <input type="radio" name="optionsRadios" id="optionsRadios2" value="option2" />
+                    Option two can be something else and selecting it will deselect option one
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class='col-sm-offset2 col-sm-4 control-label'></label>
+            <div class='col-sm-offset-2 col-sm-8'>
+                <button onclick="showLayer();"></button>
+        </div>
+            </div>
+</form>
+    </div>
+</div>
+</div>-->
+</body>
+</html>

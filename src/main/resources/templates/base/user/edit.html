@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("后台用户管理");
+            var userId = $("[name='id']").val();
+            $.ajax({
+                type: "POST",
+                data: {"userId": userId},
+                url: '/base/user/roleList.html',
+                dataType: 'json',
+                success: function (res) {
+                    for (index in res.t) {
+                        $("input[name='roles']:radio[value='" + res.t[index].roleId + "']").prop('checked', 'true');
+                    }
+                }
+            });
+            //提交更新
+            $("#form").validate({
+                debug: true,
+                checkStart: true,
+                errorElement: 'span',
+                errorClass: "_error",
+                focusInvalid: false,
+                ignore: "",
+                submitHandler: function (form) {
+                    $(form).ajaxSubmit(function (res) {
+                        layer.msg(res.msg, {time: 3000});
+                        /*if (res.code == 200) {
+                         window.location.href = "/base/user/edit.html?id=" + res.t;
+                         }*/
+                    });
+                },
+                highlight: function (e) {
+                    $(e).closest('.control-group').removeClass('info').addClass('error');
+                },
+                rules: {
+                    userName: {
+                        required: true
+                    }, password: {
+                        required: true
+                    }
+                },
+                messages: {
+                    userName: {
+                        required: "必填"
+                    }, password: {
+                        required: "必填"
+                    }
+                }
+            });
+            $(".dept").attr("data-value", $(".deptIdVal").val());
+            $(".group").attr("data-value", $(".groupIdVal").val());
+        });
+        //重置密码
+        function resetPassword() {
+            $.ajax({
+                type: "POST",
+                data: {
+                    "userId": $("[name='id']").val()
+                },
+                url: '/base/user/resetPassword.html',
+                dataType: 'json',
+                success: function (res) {
+                    layer.msg(res.msg, {time: 3000});
+                }
+            });
+        }
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">后台用户管理</a><span>></span>
+        <em>修改后台用户</em>
+    </div>
+    <div class="main">
+        <input type="hidden" class="deptIdVal" th:value="${backUser.deptId}" />
+        <input type="hidden" class="groupIdVal" th:value="${backUser.groupId}" />
+        <form action="/base/user/save.json" method="post" class="form-horizontal" id="form">
+            <input type="hidden" name="id" th:value="${backUser.id}" />
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">用户名：</label>
+                    <input class="col-md-6" name="userName" th:value="${backUser.userName}" />
+                </div>
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">账号：</label>
+                    <input class="col-md-6" name="accountName" th:value="${backUser.accountName}" readonly="true" style="cursor:not-allowed;" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">是否锁定：</label>
+                    <select class="col-md-6" name="locked">
+                        <option value="0" th:selected="${backUser.locked == false}">否</option>
+                        <option value="1" th:selected="${backUser.locked == true}">是</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">描述：</label>
+                    <input class="col-md-6" name="description" th:value="${backUser.description}" />
+                </div>
+            </div>
+            <div class="row">
+                <div id="element_id" class="col-md-3">
+                    <label class="col-md-4 control-label">部门和组：</label>
+                    <select class="dept" name="deptId" data-url="/base/dept/findDept.json" data-first-title="请选择部门"></select>
+                    <select class="group" name="groupId" data-url="/base/dept/findGroupByDeptId.json" data-first-title="请选择分组"
+                            data-json-space="t" data-json-name="groupName" data-json-value="id"></select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="col-md-4 control-label">角色：</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-3">
+                    <div class="col-md-12" th:each="g:${list}">
+                        <input style="width:25px" type="radio" name="roles" th:value="${g.id}" th:text="${g.name}" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <input type="button" class="btn btn-info" value="重置密码" data-toggle="tooltip" data-placement="top"
+                       title="重置后的密码为：123456" onclick="resetPassword();" />
+                <button class="save btn btn-danger">保存</button>
+                <input type="button" name="cancel" class="btn btn-warning" onclick="cancleGoBack();" th:value="取消" />
+            </div>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

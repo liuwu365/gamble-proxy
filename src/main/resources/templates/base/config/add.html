@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        //<![CDATA[
+        $(function () {
+            showSide("基础配置");
+            $(".save").click(function(){
+                $('#form').ajaxSubmit(function (res) {
+                    if (res.code == 200) {
+                        layer.confirm("添加成功，是否继续新增？", {
+                            btn: ['确定', '取消']
+                        }, function () {
+                            window.location.href = "/configManage/enumData/add.json";
+                        }, function () {
+                            window.location.href = "/configManage/enumData/sysEnumDataList.json";
+                        });
+                    } else {
+                        layer.msg(res.msg, {time: 3000});
+                    }
+                });
+            });
+        });
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">配置管理</a><span>></span>
+        <a href="/configManage/enumData/sysEnumDataList.json">基础配置管理</a><span>></span>
+        <em>新增配置</em>
+    </div>
+    <div class="main">
+        <form action="/configManage/enumData/addSysEnumData.json" method="post" class="form-horizontal" id="form">
+            <div class="form-group">
+                <label class="col-sm-1 control-label">枚举类型：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="dataType" placeholder="请输入枚举类型"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">键：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="enumKey" placeholder="请输入键"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">值：</label>
+                <div class="col-sm-3">
+                    <textarea  type="text" class="form-control" name="enumValue" placeholder="请输入值"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-1 control-label">描述：</label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="description" placeholder="请输入描述"/>
+                </div>
+            </div>
+            <div class="col-xs-12 operate">
+                <input type="button" class="save btn btn-danger"  value="保存" />
+                <input type="button" name="cancel" class="btn btn-warning" value="取消" onclick="cancleGoBack();" />
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

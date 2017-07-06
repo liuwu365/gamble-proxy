@@ -1,0 +1,141 @@
+@CHARSET "UTF-8";
+/*全局*/
+body{ font-family:Arial, "Microsoft YaHei"; background:#eee; }
+label{ font-weight:500 }
+input[type=checkbox], input[type=radio]{ vertical-align:middle }
+textarea{ resize:vertical }
+a:focus{ outline:0; outline:0 }
+.form-group{ position:relative }
+.form-group-first{ margin-left:-15px }
+.form-group .help-block{ display:none !important }
+.operate{ margin-top:40px !important; margin-bottom:20px !important; padding-left:105px; }
+.operate .btn{ font-size:16px; min-width:100px; margin-right:20px }
+.text-red{ color:red }
+.modal-dialog{ margin-top:12%; width:642px }
+.modal-search{ margin:-15px -15px 0; padding:15px; background:#eee }
+/*头部*/
+.header{ position:fixed; width:100%; min-width:1495px; z-index:10; }
+.header .logo{ position:absolute; top:0; left:0; width:220px; height:50px; text-align:center; background:#0f1316; border-right:1px solid #000 }
+.header .logo:before{ content:""; display:inline-block; width:0; height:100%; vertical-align:middle }
+.header .logo span{ color:white; font-size:22px; }
+.header .navbar{ margin-left:220px; margin-bottom:0; background-color:#1f262d; border:0; border-left:1px solid #2e363f; border-radius:0 !important }
+.header .navbar-nav{ float:left; margin:0 }
+.header .navbar-nav > li{ float:left }
+.navbar .navbar-nav > li > a{ padding-top:15px; padding-bottom:15px; font-size:16px; color:#a0aab4; cursor:pointer; }
+.navbar .nav > li > a:focus, .navbar .nav > li > a:hover{ text-decoration:none; background-color:#eee; color:#444 }
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:focus, .navbar .navbar-nav > .active > a:hover{ color:#fff; background-color:#eb2b44 }
+.nav.navbar-right > li{ border-left:1px solid #000 }
+.nav.navbar-right > li a{ font-size:14px; border-left:1px solid #2e363f }
+/*头部右侧消息通知*/
+.notice{ width:230px; }
+.notice li a{ padding:3px 6px !important; }
+/*侧边栏*/
+.side{ position:fixed; top:50px; left:0; bottom:0; z-index:10; width:220px; background:#1e242b }
+.side ul li{ line-height:50px; font-size:15px; border-bottom:1px solid #262d35 }
+.side ul li a{ position:relative; display:block; padding:0 15px; color:#939da8; border-bottom:1px solid #151a1f }
+.side ul li:first-child a, .side ul li:first-child a:hover{ line-height:40px; background:#27a9e3; color:#fff }
+.side ul li a:after{ content:">"; position:absolute; right:15px; font-family:sans-serif; font-weight:700 }
+.side ul li:first-child a:after{ content:none }
+.side ul li a i{ margin-right:3px; padding:2px 10px }
+.side ul li a i.icon-home{ background-repeat:no-repeat; }
+.side ul li a i.icon-game{ background-repeat:no-repeat; }
+.side ul li a i.icon-hero{ background-repeat:no-repeat; }
+.side ul li a i.icon-rank{ background-repeat:no-repeat; }
+.side ul li a i.icon-team{ background-repeat:no-repeat; }
+.side ul li a i.icon-schedule{ background-repeat:no-repeat; }
+.side ul li a i.icon-event{ background-repeat:no-repeat; }
+.side ul li.active a, .side ul li a:hover{ text-decoration:none; background:#2e363f; color:#fff; }
+.side ul li.active a i.icon-game, .side ul li a:hover i.icon-game{ background-repeat:no-repeat; }
+.side ul li.active a i.icon-hero, .side ul li a:hover i.icon-hero{ background-repeat:no-repeat; }
+.side ul li.active a i.icon-rank, .side ul li a:hover i.icon-rank{ background-repeat:no-repeat; }
+.side ul li.active a i.icon-team, .side ul li a:hover i.icon-team{ background-repeat:no-repeat; }
+.side ul li.active a i.icon-schedule, .side ul li a:hover i.icon-schedule{ background-repeat:no-repeat; }
+.side ul li.active a i.icon-event, .side ul li a:hover i.icon-event{ background-repeat:no-repeat; }
+/* 下边样式可以和上边合并，时间原因先暂记录下后边再整合 TODO */
+.side ul li.active a i.icon-game, .side ul li a:hover i.icon-game{ background-position:0px 0px }
+.side ul li a i.icon-home{ background-position:-35px 0px }
+.side ul li a i.icon-hero{ background-position:0px -35px }
+.side ul li a i.icon-rank{ background-position:-35px -35px }
+.side ul li a i.icon-team{ background-position:-70px 0px }
+.side ul li a i.icon-schedule{ background-position:-70px -35px }
+.side ul li a i.icon-event{ background-position:0px -70px }
+.side ul li a i.icon-game{ background-position:-35px -70px }
+.side ul li.active a i.icon-hero, .side ul li a:hover i.icon-hero{ background-position:-70px -70px }
+.side ul li.active a i.icon-rank, .side ul li a:hover i.icon-rank{ background-position:-105px 0px }
+.side ul li.active a i.icon-team, .side ul li a:hover i.icon-team{ background-position:-105px -35px }
+.side ul li.active a i.icon-schedule, .side ul li a:hover i.icon-schedule{ background-position:-105px -70px }
+.side ul li.active a i.icon-event, .side ul li a:hover i.icon-event{ background-position:0px -105px }
+.side ul li.active a i.icon-game, .side ul li a:hover i.icon-game, .side ul li a i.icon-home, .side ul li a i.icon-hero, .side ul li a i.icon-rank, .side ul li a i.icon-team, .side ul li a i.icon-schedule, .side ul li a i.icon-event, .side ul li a i.icon-game, .side ul li.active a i.icon-hero, .side ul li a:hover i.icon-hero, .side ul li.active a i.icon-rank, .side ul li a:hover i.icon-rank, .side ul li.active a i.icon-team, .side ul li a:hover i.icon-team, .side ul li.active a i.icon-schedule, .side ul li a:hover i.icon-schedule, .side ul li.active a i.icon-event, .side ul li a:hover i.icon-event, .team-members li i.sel{ background-image:url(../images/style_z.png) }
+/*面包屑*/
+.bread{ position:fixed; top:50px; left:220px; right:0; z-index:9; padding:5px 30px; height:41px; line-height:29px; background:#fff; border-bottom:1px solid #eee; color:#333 }
+.bread .icon-home{ margin-right:3px; padding:2px 10px; background:url(../images/m_01_2.png) }
+.bread a{ color:#333 }
+.bread a:hover{ color:#eb2b44; text-decoration:none }
+.bread span{ margin:0 5px; font-family:sans-serif; font-size:12px; font-weight:700 }
+.bread em{ font-style:initial; color:#eb2b44 }
+/*内容主干*/
+.container{ /*position:fixed;*/ padding:85px 0 0 220px; width:100% !important; min-width:1495px; }
+.container > .main{ margin:15px }
+.container > .main .row{ margin-top:20px }
+.container > .main select, .container > .main input{ height:35px; }
+.container > .main .col-md-1{ height:35px; }
+.main-tabs ul{ margin:0; padding:0; list-style:none }
+.main-tabs ul li{ float:left; margin-right:2px; width:170px; height:50px; line-height:50px; text-align:center; font-size:16px; background:#2e363f }
+.main-tabs ul li.active{ background:#eb2b44 }
+.main-tabs ul li a{ display:block; color:#fff }
+.main-tabs ul li a:hover{ text-decoration:none }
+.wrapper{ margin-bottom:7px; padding:15px; background:#fff; border-radius:5px; box-shadow:0 0 10px rgba(0, 0, 0, .1) }
+.wrapper .wrap{ padding:15px }
+.wrapper [class|=col]{ margin:10px 0; min-height:34px }
+.wrapper .col-1{ margin:10px 0 20px; min-height:34px }
+.pull-left-auto{ float:left; position:relative; margin:10px 0; padding-right:15px; padding-left:15px; min-height:34px }
+.form-horizontal .pull-left-auto div.pull-left{ width:83px }
+.up_img_box{ float:left; margin-right:20px; overflow:hidden; width:88px; height:88px; background:#eee }
+.up_img_box.small{ margin-top:44px; width:44px; height:44px }
+.up_img_box:before{ content:""; display:inline-block; width:0; height:100%; vertical-align:middle }
+.up_img_box img{ width:auto; height:auto; max-width:100%; max-height:100% }
+.up_img label.pull-left, .up_img div.pull-left .btn{ margin-top:54px; min-width:90px }
+.form-horizontal div.pull-left{ width:60%; max-width:280px; margin-right:15px; position:relative }
+.form-horizontal .col-xs-12 div.pull-left, .form-horizontal .col-lg-10 div.pull-left{ width:72.5%; max-width:none }
+.form-horizontal .col-xs-12 .pull-left label.control-label, .form-horizontal .col-lg-10 .pull-left label.control-label{ margin-right:50px }
+.form-horizontal .control-label{ padding-top:7px; margin-bottom:0; text-align:right }
+.form-horizontal label.pull-left{ min-width:70px; text-align:right; font-weight:500; padding-top:7px; margin-bottom:0 }
+.form-inline .form-group{ display:inline-block; margin-bottom:0; vertical-align:middle }
+.form-inline .form-group + .form-group{ margin-left:15px }
+.form-inline .form-control{ display:inline-block; width:auto; max-width:280px; vertical-align:middle }
+.form-group .glyphicon-calendar, .pull-left .glyphicon-calendar{ position:absolute; right:7px; top:8px; font-size:18px; color:#666 }
+.container-list{ margin:5px auto 15px; padding-right:15px; padding-left:15px }
+.table-bordered > thead > tr > td, .table-bordered > thead > tr > th{ text-align:center; border-bottom-width:1px }
+.container-list .table-bordered{ border-top-color:#1e242b }
+.container-list .table-bordered > thead > tr > td, .container-list .table-bordered > thead > tr > th{ background:#1e242b; border-color:#555; color:#fff; font-size:15px; line-height:30px; padding:8px 5px; white-space:nowrap }
+.container-list .table tr td{ vertical-align:middle; text-align:center }
+.container-list .table tr td > div{ overflow:hidden; -webkit-line-clamp:1; line-clamp:1; -webkit-box-orient:vertical; box-orient:vertical; display:-webkit-box; display:box }
+.container-list .table tr td img{ vertical-align:middle; height:44px; }
+.container-list .table .text{ margin-right:10% }
+.container-list .table .xg{ margin-left:5px; padding:0 12px; background:url(../images/bj.png) no-repeat center; }
+.container-list .table .nowrap{ white-space:nowrap }
+.container-list .table .time{ margin:-2px auto; width:76px; display:block; line-height:16px }
+/*.container-list .table img{ width:auto; max-width:100%; height:28px }*/
+.team-member label.pull-left{ margin-top:17px }
+.team-members{ margin:0; padding:0; list-style:none; margin-left:-15px }
+.team-members li{ float:left; position:relative; margin:0 0 10px 15px; width:70px }
+.team-members li i.del{ display:none; position:absolute; top:-5px; right:-5px; width:16px; height:16px; line-height:16px; text-align:center; font-style:initial; color:#fff; background:#666; border-radius:16px; cursor:pointer }
+.team-members li:hover i.del{ display:block }
+.team-members li i.del:hover{ background:red }
+.team-members li img{ width:70px; height:70px; border:1px solid #d4d4d4 }
+.team-members li span{ display:block; text-align:center; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:12px; margin-top:3px }
+.team-members li a.plus{ display:block; width:70px; height:70px; border:3px solid #d4d4d4; background:url(../images/plus_01.png) no-repeat center }
+.team-members li a.plus:hover{ border-color:#eb2b44; background-image:url(../images/plus_02.png) }
+.team-members li a.plus:hover + span{ color:#eb2b44 }
+.team-members li i.sel{ display:none; position:absolute; top:56px; right:0; width:14px; height:14px; background-repeat:no-repeat; }
+.team-members li.cur i.sel{ display:block }
+.modal-team-box{ padding:15px 0 15px 15px; height:230px; overflow-x:hidden; overflow-y:auto; margin-right:-15px; margin-bottom:-15px }
+.modal-team-box .team-members li:hover img, .modal-team-box .team-members li.cur img{ border-color:#ff576d }
+.round{ padding-top:7px }
+.round label{ margin-right:10px; margin-bottom:0 }
+.ro2 .control-label{ width:104px }
+.ro4 .btn{ width:72px; font-size:20px }
+.team-members li i.sel{ background-position:-35px -105px }
+/*底部*/
+.back-foot{ width:100%; background:#1e242b; }
+.back-foot p{ margin:0 auto; text-align:center; width:735px; color:#fff; height:60px; line-height:60px; }

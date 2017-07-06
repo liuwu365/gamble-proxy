@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="renderer" content="webkit"/>
+    <title>博彩管理后台</title>
+    <script src="/js/DateUtil.js"/>
+    <script type="application/javascript">
+        //<![CDATA[
+        $(function () {
+            $("#work").click();
+            showSide("待处理工单");
+            var defaultOrderNo = 'CW20170627001';
+            var tabsData = [
+                {"id": "roleOrder", "url": "/work/order/getPendingOrders0.json?type=1"},
+                {"id": "myOrder", "url": "/work/order/getPendingOrders0.json"}
+            ];
+
+            $(tabsData).each(function () {
+                $("a[href='#" + this.id + "']").bind('click', {
+                    id: this.id,
+                    url: this.url
+                }, tabsHandler)
+            });
+            function tabsHandler(event) {
+                var data = event.data;
+                showTabs(data.id, data.url);
+                return false; //阻止默认a标签响应
+            }
+
+            function showTabs(tabsId, url) {
+                $("a[href='#" + tabsId + "']").tab('show');
+                var $tabContent = $('#' + tabsId);
+                console.log($tabContent.length);
+                console.log("url:" + url.format(defaultOrderNo));
+                if (url == '') {
+                    return;
+                }
+                $tabContent.load(url.format(defaultOrderNo), {}, function (data) {
+                    console.log(data);
+                });
+//                if (tabsId == "myOrder") {
+//                    getOrder(tabsId,url);
+//                }
+            }
+
+            $('a[href="#myOrder"]').click();
+
+
+            function genTr(id, data1) {
+
+                var data = data1.t[0];
+                console.log(data.orderNo);
+
+                var html = "<tr>\n" +
+                    "                <td>" + data.orderNo + "</td>\n" +
+                    "                <td>" + data.createTime + "</td>\n" +
+                    "                <td>" + data.accountName + "</td>\n" +
+                    "                <td>" + data.orderType.desc + "</td>\n" +
+                    "                <td>" + data.status.desc + "</td>\n" +
+                    "                <td>" + data.userName + "</td>\n" +
+                    "                <td>" + data.eventId + "</td>\n" +
+                    "                <td>" + data.problemDescription + "</td>\n" +
+                    "                <td><img width='20px' src='http://192.168.1.12:8090/group1/M00/00/32/wKgBDle9asGAQsF0AADIT8JgwSE010.png'/></td> " +
+                    "                <td>" + data.chatRecordId + "</td>\n" +
+                    "                <td><button class='btn btn-xs btn-danger' id='gradOrder' value='" + data.orderNo + "' onclick='gradOrder(this.value)' >我来处理</button></td>" +
+                    "            </tr>";
+
+                $("#" + id + " tbody").append(html);
+            }
+
+            function getOrder(id, url) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (data) {
+                        console.log("-------------" + data.msg);
+                        genTr(id, data);
+                    },
+                    error: function (e) {
+                        console.log(e);
+                    }
+                });
+            }
+
+
+        });
+
+        /**
+         * 完成工单
+         * @param e
+         */
+        function handlerComplete(e) {
+            var orderNo = $(e).parent().parent().find("td:first span").text();
+            var url = "/work/process/" + orderNo + "/0/handler.json";
+            window.location.href = url;
+        }
+        /**
+         * 确认工单
+         */
+        function toBeConfirmed(e) {
+            var orderNo = $(e).parent().parent().find("td:first span").text();
+            var url = "/work/process/" + orderNo + "/1/handler.json";
+            window.location.href = url;
+        }
+
+        /**
+         * 驳回工单
+         * @param e
+         */
+        function reject(e) {
+            var orderNo = $(e).parent().parent().find("td:first span").text();
+            var url = "/work/process/" + orderNo + "/2/handler.json";
+            window.location.href = url;
+        }
+
+        /**
+         * 对驳回的工单做修改
+         * @param e
+         */
+        function updateOrder(e) {
+            var orderNo = $(e).parent().parent().find("td:first span").text();
+            var url = "/work/process/" + orderNo + "/3/handler.json";
+            window.location.href = url;
+        }
+
+
+        function gradOrder(orderNo) {
+            var url = "/work/process/CW20170627001/grad.json";
+
+            $.ajax({
+                url: "/work/process/" + orderNo + "/grab.json",
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("抢单：" + data.msg);
+
+                },
+                error: function (e) {
+                    console.log(e);
+                }
+            });
+        }
+
+
+        //]]>
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">客服管理</a><span>></span>
+        <a href="/base/resources/list.html">待处理订单管理</a><span>></span>
+        <em>待处理订单列表</em>
+    </div>
+    <div class="main wrapper">
+
+
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <ul id="myTab" class="nav nav-tabs center-block">
+                    <li class="active">
+                        <a href="#roleOrder" data-toggle="tab">
+                            组内工单
+                        </a>
+                    </li>
+                    <li><a href="#myOrder" data-toggle="tab">我的工单</a></li>
+                    <!--<a class="btn  btn-info pull-right">创建工单</a>-->
+                </ul>
+
+
+                <div id="myTabContent" class="tab-content">
+                    <div class="tab-pane fade in active" id="roleOrder">
+                        <p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
+                    </div>
+                    <div class="tab-pane fade" id="myOrder">
+                        <div class="container-list">
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                    <tr>
+                                        <td>工单号</td>
+                                        <td>创建时间</td>
+                                        <td>创建人</td>
+                                        <td>工单类型</td>
+                                        <td>工单状态</td>
+                                        <td>用户ID</td>
+                                        <td>事件ID</td>
+                                        <td>工单描述</td>
+                                        <td>图片</td>
+                                        <td>聊天记录ID</td>
+                                        <td>操作</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorator="model/head">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta name="renderer" content="webkit" />
+    <title>博彩管理后台</title>
+    <script type="text/javascript">
+        $(function () {
+            showSide("部门管理");
+            $(".newadd").click(function () {
+                window.location = '/base/dept/add.html';
+            });
+        });
+        function deleteDept(doc) {
+            console.log(doc);
+            layer.confirm("确定删除此部门吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.ajax({
+                    url: "/base/dept/deleteDept",
+                    dataType: "json",
+                    type: "get",
+                    data: {deptId: doc.id, deptName: doc.alt},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 2000}, function () {
+                            window.location.reload();
+                        });
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        function deleteGroup(doc) {
+            layer.confirm("确定删除此分组吗？", {
+                btn: ['确定', '取消']
+            }, function () {
+                $.ajax({
+                    url: "/base/dept/deleteGroup",
+                    dataType: "json",
+                    type: "get",
+                    data: {groupId: doc.id, groupName: doc.alt},
+                    success: function (res) {
+                        layer.msg(res.msg, {time: 2000}, function () {
+                            window.location.reload();
+                        });
+                    }, error: function () {
+                        layer.msg("服务器异常", {time: 3000});
+                    }
+                });
+            }, function () {
+                layer.close();
+            });
+        }
+        function updateDeptName(doc) {
+            var obj = $(doc);
+            var deptName = obj.attr("deptName");
+            layer.open({
+                type: 1,
+                title: '修改【' + deptName + '】的名称',
+                skin: 'layui-layer-demo',
+                shift: 2,
+                shadeClose: false,
+                area: ['420px', ''],
+                content: '<div class="alertDiv">部门名称：<input type="text" id="deptName" name="deptName" value="' + deptName + '"/></div>',
+                btn: ['保存', '取消'],
+                yes: function () {
+                    $.ajax({
+                        url: '/base/dept/editDeptName.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {id: doc.id, deptName: $("#deptName").val()},
+                        success: function (data) {
+                            if (data.code == 200) {
+                                layer.msg(data.msg, {time: 2000}, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(data.msg, {time: 3000});
+                            }
+                        },
+                        error: function () {
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel: function () {
+                }
+            });
+        }
+        function addGroup(doc) {
+            var obj = $(doc);
+            var deptName = obj.attr("deptName");
+            layer.open({
+                type: 1,
+                title: '给【' + deptName + '】添加分组',
+                skin: 'layui-layer-demo',
+                shift: 2,
+                shadeClose: false,
+                area: ['420px', ''],
+                content: '<div class="alertDiv">' +
+                '<div>部门名称：<input type="text" disabled="disabled" value="' + deptName + '"/></div>' +
+                '<div>分组名称：<input type="text" id="groupName" name="groupName" value=""/></div>' +
+                '</div>',
+                btn: ['保存', '取消'],
+                yes: function () {
+                    $.ajax({
+                        url: '/base/dept/addGroup.html',
+                        method: 'post',
+                        dataType: 'json',
+                        data: {deptId: doc.id, groupName: $("#groupName").val()},
+                        success: function (data) {
+                            console.log(data);
+                            if (data.code == 200) {
+                                layer.msg(data.msg, {time: 1000}, function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(data.msg, {time: 3000});
+                            }
+                        },
+                        error: function () {
+                            layer.msg('系统错误，请您稍后重试！');
+                        }
+                    });
+                },
+                cancel: function () {
+                }
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="container" layout:fragment="content">
+    <div class="bread">
+        <i class="icon-home"></i>
+        <a href="#">网站设置</a><span>></span>
+        <a href="/base/user/list.html">部门管理</a><span>></span>
+        <em>部门列表</em>
+    </div>
+    <div class="main wrapper">
+        <div class="wrap">
+            <form action="/base/dept/list.html" method="POST" class="form-inline" id="searchForm">
+                <input type="hidden" id="page" name="page" th:value="${page.page}" />
+                <input type="hidden" name="totalPage" th:value="${page.totalPage}" />
+                <div class="form-group">
+                    <input type="text" name="filter['deptName']" class="form-control" placeholder="部门名称搜索" th:value="${page.filter['deptName']}" />
+                    <button type="submit" onclick="resetPage();" class="btn btn-default">搜索</button>
+                </div>
+                <div class="pull-right">
+                    <a href="javascript:;" class="btn btn-default" onclick="location.reload();">刷新</a>
+                    <a href="#" class="newadd btn btn-success">新增</a>
+                </div>
+            </form>
+        </div>
+        <div class="container-list">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <td>部门ID</td>
+                        <td>部门名称</td>
+                        <td>分组</td>
+                        <td>创建时间</td>
+                        <td>修改时间</td>
+                        <td>操作</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="d:${page.result}">
+                        <td th:text="${d.id}"></td>
+                        <td>
+                            <div>
+                                <span th:text="${d.deptName==null? '':d.deptName}"></span>
+                                <a class="xg" href="javascript:;" th:id="${d.id}" th:attr="deptName=${d.deptName}" onclick="updateDeptName(this);" title="修改"></a>
+                            </div>
+                        </td>
+                        <td>
+                            <div th:unless="${#lists.isEmpty(d.groupList)}" th:each="g:${d.groupList}">
+                                <span th:id="${g.id}" th:text="${g.groupName+' '}"></span>
+                                <a href="#" th:id="${g.id}" th:alt="${g.groupName}" onclick="deleteGroup(this);" class="btn btn-xs btn-danger">删除</a>
+                            </div>
+                        </td>
+                        <td th:text="${#dates.format(d.createTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td th:text="${#dates.format(d.updateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                        <td>
+                            <a href="#" th:id="${d.id}" th:attr="deptName=${d.deptName}" onclick="addGroup(this)" class="btn btn-xs btn-info">添加分组</a> |
+                            <a href="#" th:id="${d.id}" th:alt="${d.deptName}" onclick="deleteDept(this);" class="btn btn-xs btn-danger">删除</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-center">
+                <ul id="pageLimit"></ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+/*liuwu后台公用的css*/
+@CHARSET "UTF-8";
+
+.welcome_exit{float: right;margin-right: 100px;}
+
+/*cms内容分页标签样式*/
+.pageContent{font-size: 14px;text-align:center;}
+.pageContent a{margin:20px 3px;font-size: 14px;}
+
+/*左侧菜单选中样式*/
+.selectMenu {color: #fff !important;background: #eb2b44;}
+.select_li_Menu{background: #2e363f;}
+
+/*引用样式*/
+.clear{clear:both;}
+.tip{color: blue;font-size: 13px;margin: 20px 0 0 30px;cursor: text;}
+
+/*鼠标悬浮显示大图*/
+#tooltip{position:absolute;z-index:9;width:auto;height:auto;max-width:200px;max-height:200px;border: 1px solid burlywood;}
+#tooltip2{position:absolute;z-index:9;width: 200px;height: 200px;border: 1px solid burlywood;}
+
+/*鼠标高亮行的背景色*/
+tr.over td{background:#bcd4ec;}
+
+/*错误标签*/
+._error{color: #ff0000;}
+._btn{margin-left: 20px;width: 150px !important;height: 41px !important;border: none !important;font-size: 16px !important;color: #fff !important;background: #E82439; }
+
+/*form表单中的单选按钮*/
+#form .radioSTY label{display: inline;}
+#form .radioSTY label input[type="radio"] { margin-left: 5px; width: 20px; }
+#form .radioSTY label:nth-child(2) input[type="radio"]{margin-left: 20px;}
+#form .inputShortWidth{width:120px;}
+
+
+/*界面操作区样式*/
+._action{margin-top:10px;padding:7px 10px;background:#F3F9FD;border:1px solid #A8C7CE;height:45px;}
+._action input{margin-right:10px;width:150px;}
+._action ul{margin:0;padding:0;list-style-type:none;}
+._action ul label{ display: inline;}
+._action ul li{float:left;margin-left:10px;height:25px;line-height:25px;}
+._action ul li input[type="button"],input[type="reset"],input[type="submit"]{width:76px;}
+
+/*通用*/
+.float-left{ float:left;}
+.float-right{ float:right;}
+.form-tags{ float:left;}
+.red{ color:red;}
+.imgTip{ width:18px; height:18px !important; }
+.notAllowed{cursor: not-allowed;}
+.help{cursor:help}
+#editor{ margin-top:10px; width:1000px; /*height:250px;*/ }
+#index_pic{width:93px; height:93px;}
+/*弹出框样式*/
+.layui-layer-demo .layui-layer-title{border:none; background-color:#333; color:#fff;}
+.alertDiv{ height:100%;display: block;font-size:14px;margin: 2% 14%;}
+.alertDiv input{height:36px;margin-bottom: 10px;}
